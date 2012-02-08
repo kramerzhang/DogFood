@@ -1,0 +1,12 @@
+# Project property files
+
+.actionScriptProperties
+
+.flexProperties
+
+.settings/
+
+.project
+
+.flexLibProperties
+bin/
