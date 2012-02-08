@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="com.kramer.trove.Color"/>
+    <classEntry path="com.kramer.trove.HtmlString"/>
+    <classEntry path="com.kramer.resource.item.FrameSheetItem"/>
+    <classEntry path="com.kramer.frameSheet.FrameCommand"/>
+    <classEntry path="com.kramer.entity.Entity"/>
+    <classEntry path="com.kramer.entity.events.CommandEvent"/>
+    <classEntry path="com.kramer.animation.Animation"/>
+    <classEntry path="com.kramer.entity.events.EntityEvent"/>
+    <classEntry path="com.kramer.entity.AnimatedElement"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

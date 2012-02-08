@@ -1,0 +1,123 @@
+package com.kramer.resource
+{
+	/**
+	 *@author Kramer 
+	 */	
+	import com.kramer.core.IDisposable;
+	import com.kramer.resource.events.ResourceEvent;
+	import com.kramer.resource.item.ILoadable;
+	
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.events.ProgressEvent;
+
+	public class LoadableItemWrapper implements IDisposable
+	{
+		private var _item:ILoadable;
+		private var _completeHandler:Function;
+		private var _startHandler:Function;
+		private var _progressHandler:Function;
+		private var _errorHandler:Function;
+		
+		public function LoadableItemWrapper(item:ILoadable, completeHandler:Function, startHandler:Function, progressHandler:Function, errorHandler:Function)
+		{
+			_item = item;
+			_completeHandler = completeHandler;
+			_startHandler = startHandler;
+			_progressHandler = progressHandler;
+			_errorHandler = errorHandler;
+			addItemEventListener();
+		}
+		
+		public function get item():ILoadable
+		{
+			return _item;
+		}
+		
+		public function get completeHandler():Function
+		{
+			return _completeHandler;
+		}
+		
+		public function get startHandler():Function
+		{
+			return _startHandler;
+		}
+		
+		public function get progressHandler():Function
+		{
+			return _progressHandler;
+		}
+		
+		public function get errorHandler():Function
+		{
+			return _errorHandler;
+		}
+		
+		private function addItemEventListener():void
+		{
+			if(_completeHandler != null)
+			{
+				_item.addEventListener(ResourceEvent.COMPLETE, _completeHandler, false, 1);
+			}
+			if(_startHandler != null)
+			{
+				_item.addEventListener(Event.OPEN, _startHandler, false, 1);
+			}
+			if(_progressHandler != null)
+			{
+				_item.addEventListener(ProgressEvent.PROGRESS, _progressHandler, false, 1);
+			}
+			if(_errorHandler != null)
+			{
+				_item.addEventListener(ErrorEvent.ERROR, _errorHandler, false, 1);
+			}
+		}
+		
+		private function removeItemEventListener():void
+		{
+			if(_completeHandler != null)
+			{
+				_item.removeEventListener(ResourceEvent.COMPLETE, _completeHandler);
+			}
+			if(_startHandler != null)
+			{
+				_item.removeEventListener(Event.OPEN, _startHandler);
+			}
+			if(_progressHandler != null)
+			{
+				_item.removeEventListener(ProgressEvent.PROGRESS, _progressHandler);
+			}
+			if(_errorHandler != null)
+			{
+				_item.removeEventListener(ErrorEvent.ERROR, _errorHandler);
+			}
+		}
+		
+		public function fireItemLoadStartEvent():void
+		{
+			_item.dispatchEvent(new Event(Event.OPEN));
+		}
+		
+		public function fireItemLoadErrorEvent():void
+		{
+			_item.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
+		}
+		
+		public function fireItemLoadProgressEvent(bytesLoaded:Number, bytesTotal:Number):void
+		{
+			_item.dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, bytesLoaded, bytesTotal));
+		}
+		
+		public function fireItemLoadCompleteEvent(content:*):void
+		{
+			_item.dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, content));
+		}
+		
+		public function dispose():void
+		{
+			removeItemEventListener();
+			_item = null;
+		}
+	}
+}
