@@ -54,32 +54,32 @@ package com.kramer.resource.cache
 			return _key;
 		}
 		
-		public function getCachedItem(type:String, url:String, completeHandler:Function, startHandler:Function = null, progressHandler:Function = null, errorHandler:Function = null):void
+		public function getCachedItem(type:String, url:String, completeHandler:Function, startHandler:Function, progressHandler:Function, errorHandler:Function, priority:int):void
 		{
-			getCache(type, url, completeHandler, startHandler, progressHandler, errorHandler);
+			getCache(type, url, completeHandler, startHandler, progressHandler, errorHandler, priority);
 		}
 		
-		private function getCache(type:String, url:String, completeHandler:Function, startHandler:Function = null, progressHandler:Function = null, errorHandler:Function = null):void
+		private function getCache(type:String, url:String, completeHandler:Function, startHandler:Function, progressHandler:Function, errorHandler:Function, priority:int):void
 		{
 			if(_cachedItemMap.containsKey(url))
 			{
 				recordToHeatIndexMap(url);
 				var cachedItem:ILoadable = _cachedItemMap.get(url) as ILoadable;
 				var newItem:ILoadable = LoadableItemFactory.createItem(type, url);
-				var wrapper:LoadableItemWrapper = new LoadableItemWrapper(newItem, completeHandler, startHandler, progressHandler, errorHandler);
+				var wrapper:LoadableItemWrapper = new LoadableItemWrapper(newItem, completeHandler, startHandler, progressHandler, errorHandler, priority);
 				wrapper.fireItemLoadCompleteEvent(cachedItem.getContent());
 			}
 			else
 			{
-				loadCache(type, url, completeHandler, startHandler, progressHandler, errorHandler);
+				loadCache(type, url, completeHandler, startHandler, progressHandler, errorHandler, priority);
 			}
 		}
 		
-		private function loadCache(type:String, url:String, completeHandler:Function, startHandler:Function = null, progressHandler:Function = null, errorHandler:Function = null):void
+		private function loadCache(type:String, url:String, completeHandler:Function, startHandler:Function, progressHandler:Function, errorHandler:Function, priority:int):void
 		{
 			var cache:ILoadable = LoadableItemFactory.createItem(type, url);
 			var completeHandlerWrapper:CompleteHandlerWrapper = new CompleteHandlerWrapper(completeHandler, onCacheLoadComplete);
-			var loadableItemWrapper:LoadableItemWrapper = new LoadableItemWrapper(cache, completeHandlerWrapper.completeHandler, startHandler, progressHandler, errorHandler);
+			var loadableItemWrapper:LoadableItemWrapper = new LoadableItemWrapper(cache, completeHandlerWrapper.completeHandler, startHandler, progressHandler, errorHandler, priority);
 			LoadingManager.addCache(loadableItemWrapper);
 		}
 		

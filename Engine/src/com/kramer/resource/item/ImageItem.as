@@ -3,7 +3,7 @@ package com.kramer.resource.item
 	/**
 	 *@author Kramer 
 	 */	
-	import com.kramer.resource.ResourceType;
+	import com.kramer.resource.constant.ResourceType;
 	
 	import flash.system.LoaderContext;
 	

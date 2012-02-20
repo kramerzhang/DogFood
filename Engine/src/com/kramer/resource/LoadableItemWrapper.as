@@ -18,14 +18,21 @@ package com.kramer.resource
 		private var _startHandler:Function;
 		private var _progressHandler:Function;
 		private var _errorHandler:Function;
+		private var _priority:int;
 		
-		public function LoadableItemWrapper(item:ILoadable, completeHandler:Function, startHandler:Function, progressHandler:Function, errorHandler:Function)
+		public function LoadableItemWrapper(item:ILoadable, 
+											completeHandler:Function, 
+											startHandler:Function, 
+											progressHandler:Function, 
+											errorHandler:Function, 
+											priority:int)
 		{
 			_item = item;
 			_completeHandler = completeHandler;
 			_startHandler = startHandler;
 			_progressHandler = progressHandler;
 			_errorHandler = errorHandler;
+			_priority = priority;
 			addItemEventListener();
 		}
 		
@@ -52,6 +59,11 @@ package com.kramer.resource
 		public function get errorHandler():Function
 		{
 			return _errorHandler;
+		}
+		
+		public function get priority():int
+		{
+			return _priority;
 		}
 		
 		private function addItemEventListener():void

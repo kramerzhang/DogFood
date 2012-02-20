@@ -2,7 +2,7 @@ package com.kramer.resource.item
 {
 	import com.kramer.core.lib_internal;
 	import com.kramer.frameSheet.FrameSheet;
-	import com.kramer.resource.ResourceType;
+	import com.kramer.resource.constant.ResourceType;
 	import com.kramer.resource.events.ResourceEvent;
 	
 	import flash.display.Bitmap;

@@ -149,10 +149,24 @@ package com.kramer.resource
 			if(_itemQueue.length != 0)
 			{
 				_loadingItemNum++;
+				_itemQueue.sort(sortItemByPriority);
 				var itemWrapper:LoadableItemWrapper = _itemQueue.shift(); 
 				_loadingItemMap.put(itemWrapper.item, itemWrapper);
 				loadItem(itemWrapper);
 			}
+		}
+		
+		private static function sortItemByPriority(a:LoadableItemWrapper, b:LoadableItemWrapper):int
+		{
+			if(a.priority > b.priority)
+			{
+				return 1;
+			}
+			if(a.priority < b.priority)
+			{
+				return -1
+			}
+			return 0;
 		}
 		
 		private static function loadItem(wrapper:LoadableItemWrapper):void
