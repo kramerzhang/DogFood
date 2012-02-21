@@ -3,11 +3,9 @@ package com.kramer.resource
 	import com.kramer.core.IDisposable;
 	import com.kramer.resource.item.ILoadable;
 	
-	import flash.debugger.enterDebugger;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
 	import flash.events.ProgressEvent;
 	
 	[Event(name="progress", type = "flash.events.ProgressEvent")]
