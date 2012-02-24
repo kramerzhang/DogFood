@@ -5,9 +5,6 @@ package com.kramer.utils
 
 	public class MovieClipUtil
 	{
-		public function MovieClipUtil(blocker:Blocker)
-		{
-		}
 		
 		public static function playToStop(mc:MovieClip, frameNum:int, callback:Function = null):void
 		{
@@ -52,5 +49,3 @@ package com.kramer.utils
 		}
 	}
 }
-
-class Blocker{}

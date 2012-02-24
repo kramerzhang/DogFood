@@ -114,12 +114,6 @@ package com.kramer.utils
 			return pattern.test(source);
 		}   
 		
-		public static function verifyUserID(source:String):Boolean
-		{
-			var pattern:RegExp = /^\d{5,11}$/;
-			return pattern.test(source);
-		}
-		
 		public static function parsePositionStr(posStr:String):Point
 		{
 			if(trim(posStr) == EMPTY)
