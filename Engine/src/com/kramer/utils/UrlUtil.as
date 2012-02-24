@@ -1,5 +1,6 @@
 package com.kramer.utils
 {
+	import com.kramer.Config;
 	import com.kramer.trove.HashMap;
 
 	public class UrlUtil
@@ -34,6 +35,11 @@ package com.kramer.utils
 		{
 			var pattern:RegExp =/-\d*?\./;
 			return url.replace(pattern, ".");
+		}
+		
+		public static function getReletiveUrl(url:String):String
+		{
+			return url.substr(Config.ASSETS_PATH.length);
 		}
 		
 		public static function setVersionData(data:HashMap):void

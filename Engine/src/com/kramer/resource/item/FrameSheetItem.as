@@ -17,7 +17,6 @@ package com.kramer.resource.item
 
 	public class FrameSheetItem extends BinaryItem implements ILoadable
 	{
-		private var _rawData:ByteArray;
 		private var _imageLoader:Loader;
 		private var _frameSheet:FrameSheet;
 		
@@ -29,10 +28,8 @@ package com.kramer.resource.item
 		override protected function parseStream():void
 		{
 			_frameSheet = new FrameSheet();
-			_rawData = new ByteArray();
-			_streamLoader.readBytes(_rawData);
-			_frameSheet.readDescription(_rawData);
-			loadImage(_rawData);
+			_frameSheet.readDescription(_content);
+			loadImage(_content);
 		}
 		
 		private function loadImage(rawData:ByteArray):void

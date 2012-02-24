@@ -5,6 +5,7 @@ package com.kramer.resource.item
 	 */	
 	import com.kramer.resource.constant.ResourceType;
 	import com.kramer.resource.events.ResourceEvent;
+	import com.kramer.resource.storage.FileStorage;
 	
 	import flash.errors.IOError;
 	import flash.events.ErrorEvent;
@@ -44,8 +45,16 @@ package com.kramer.resource.item
 		
 		public function load():void
 		{
-			addLoaderEventListener();
-			_streamLoader.load(new URLRequest(_url));
+			_content = FileStorage.getFile(_url);
+			if(_content == null)
+			{
+				addLoaderEventListener();
+				_streamLoader.load(new URLRequest(_url));
+			}
+			else
+			{
+				parseStream();
+			}
 		}
 		
 		private function addLoaderEventListener():void
@@ -57,6 +66,15 @@ package com.kramer.resource.item
 			_streamLoader.addEventListener(Event.COMPLETE, onLoadComplete);
 		}
 		
+		private function removeLoaderEventListener():void
+		{
+			_streamLoader.removeEventListener(Event.OPEN, onLoadOpen);
+			_streamLoader.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+			_streamLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onLoadError);
+			_streamLoader.removeEventListener(ProgressEvent.PROGRESS, onLoadProgress);
+			_streamLoader.removeEventListener(Event.COMPLETE, onLoadComplete);
+		}
+		
 		private function onLoadOpen(evt:Event):void
 		{
 			dispatchEvent(evt.clone());
@@ -64,6 +82,7 @@ package com.kramer.resource.item
 		
 		private function onLoadError(evt:Event):void
 		{
+			removeLoaderEventListener();
 			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "文件未找到"));
 		}
 		
@@ -76,14 +95,26 @@ package com.kramer.resource.item
 		
 		private function onLoadComplete(evt:Event):void
 		{
+			removeLoaderEventListener();
+			readContent();
 			parseStream();
+			storeContent();
 		}
 		
-		protected function parseStream():void
+		private function readContent():void
 		{
 			_content = new ByteArray();
 			_streamLoader.readBytes(_content);
 			_streamLoader.close();
+		}
+		
+		private function storeContent():void
+		{
+			FileStorage.addFile(_url, _content);
+		}
+		
+		protected function parseStream():void
+		{
 			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
 		}
 		

@@ -26,13 +26,10 @@ package com.kramer.resource.item
 		
 		override protected function parseStream():void
 		{
-			var byteArr:ByteArray = new ByteArray();
-			_streamLoader.readBytes(byteArr);
-			_streamLoader.close();
 			_loader = new Loader();
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onInternalLoadComplete);
 			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onInternalLoadError);
-			_loader.loadBytes(byteArr, _loaderContext);
+			_loader.loadBytes(_content, _loaderContext);
 		}
 		
 		private function onInternalLoadComplete(evt:Event):void

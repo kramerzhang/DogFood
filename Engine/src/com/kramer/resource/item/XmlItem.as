@@ -17,8 +17,7 @@ package com.kramer.resource.item
 		
 		override protected function parseStream():void
 		{
-			_xml = XML(_streamLoader.readUTFBytes(_streamLoader.bytesAvailable));
-			_streamLoader.close();
+			_xml = XML(_content.readUTFBytes(_content.bytesAvailable));
 			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
 		}
 		
