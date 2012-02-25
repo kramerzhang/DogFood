@@ -99,8 +99,8 @@ package com.kramer.resource.storage
 			var originalUrl:String = UrlUtil.getOriginalUrl(url);
 			var soName:String = UrlUtil.getReletiveUrl(originalUrl);
 			var ver:int = UrlUtil.getVersionByUrl(url);
-			var recordVer:int = _versionObj.data[KEY_VERSION][soName];
-			if(ver != recordVer)
+			var storedVer:int = _versionObj.data[KEY_VERSION][soName];
+			if(ver != storedVer)
 			{
 				return null;
 			}
