@@ -129,5 +129,33 @@ package com.kramer.utils
 			var pattern:RegExp = /\D/g;
 			return !pattern.test(str);
 		}
+		
+		private static const TOKEN_STRING:String = "%s";
+		private static const TOKEN_NUMBER:String = "%d";
+		private static const TOKEN_PATTERN:RegExp = /%s|%d/g;
+		public static function format(str:String, ...args):String
+		{
+			var result:String = str;
+			var matchArr:Array = str.match(TOKEN_PATTERN);
+			if(matchArr.length != args.length)
+			{
+				throw new ArgumentError("args length not match the token number in the string");
+			}
+			var len:int = matchArr.length;
+			for(var i:int = 0; i < len; i++)
+			{
+				var match:String = matchArr[i];
+				if(match == TOKEN_STRING && typeof(args[i]) != "string")
+				{
+					throw new ArgumentError("args[" + i +"] String expect, got number");
+				}
+				else if(match == TOKEN_NUMBER && typeof(args[i]) != "number")
+				{
+					throw new ArgumentError("args[" + i +"] Number expect, got String");
+				}
+				result = result.replace(match, args[i]);
+			}
+			return result;
+		}
 	}
 }
