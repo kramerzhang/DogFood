@@ -28,9 +28,10 @@ package com.kramer.animation
 		private var _endFrameNum:int;
 		private var _currentFrame:Frame;
 		private var _delay:int;
+		private var _frameRate:int;
 		private var _lastUpdateTime:int;
 		private var _isPlaying:Boolean = false;
-		private var _isDirty:Boolean = false;
+		private var _isReady:Boolean = false;
 		private var _x:Number = 0;
 		private var _y:Number = 0;
 		private var _scaleX:Number = 1;
@@ -61,7 +62,7 @@ package com.kramer.animation
 		
 		private function initialize():void
 		{
-			_isDirty = true;
+			_isReady = true;
 			_isPlaying = true;
 			_totalFramesNum = _frameSheet.totalFrameNum;
 			_frameLabelMap = _frameSheet.frameLabelMap;
@@ -182,36 +183,37 @@ package com.kramer.animation
 			return 1;
 		}
 		
-		public function set delay(value:int):void
+		public function set frameRate(value:int):void
 		{
-			_delay = value;
+			_frameRate = value;
+			_delay = 1000 / _frameRate
 		}
 		
-		public function get delay():int
+		public function get frameRate():int
 		{
-			return _delay;
+			return _frameRate;
 		}
 		
-		public function step(currentTime:int):void
+		public function update(currentTime:int):void
 		{
+			if(_isReady == false)
+			{
+				return;
+			}
 			if((currentTime - _lastUpdateTime) < _delay)
 			{
 				return;
 			}
 			_lastUpdateTime = currentTime;
-			if(_isDirty == true)
+			_currentFrame = _frameSheet.getFrame(_currentFrameNum);
+			if(this.bitmapData != _currentFrame.content)
 			{
-				_currentFrame = _frameSheet.getFrame(_currentFrameNum);
-				if(this.bitmapData != _currentFrame.content)
-				{
-					this.bitmapData = _currentFrame.content;
-					updatePosition();
-				}
+				this.bitmapData = _currentFrame.content;
+				updatePosition();
 			}
 			if(_isPlaying == true)
 			{
 				advanceFrameNum();
-				_isDirty = true;
 			}
 		}
 		

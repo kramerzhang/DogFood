@@ -1,7 +1,7 @@
 package com.kramer.frameSheet
 {
-	import com.kramer.core.lib_internal;
 	import com.kramer.core.IDisposable;
+	import com.kramer.core.lib_internal;
 	import com.kramer.log.Logger;
 	import com.kramer.trove.HashMap;
 	
@@ -29,9 +29,6 @@ package com.kramer.frameSheet
 		private var _rowNum:int;
 		private var _columnNum:int;
 		
-		//从frameSheet提取单元的个数，当单元都被提取后，释放frameSheet的大图资源
-		private var _extractedNum:int;
-		private var _totalUniqueFrameNum:int;
 		//以frame索引值为Key，frame的BitmapData为Value
 		private var _contentMap:HashMap;
 		
@@ -61,7 +58,6 @@ package com.kramer.frameSheet
 			
 			readFrames(descData);
 			readLabels(descData);
-			_totalUniqueFrameNum = calculateTotalUniqueFrameNum();
 		}
 		
 		private function readFrames(descData:ByteArray):void
@@ -122,26 +118,12 @@ package com.kramer.frameSheet
 			}
 		}
 		
-		private function calculateTotalUniqueFrameNum():int
-		{
-			var maxSheetIndex:int = 0;
-			var len:int = _frames.length;
-			for(var i:int = 0; i < len; i ++)
-			{
-				var frame:Frame = _frames[i];
-				if(frame.sheetIndex > maxSheetIndex)
-				{
-					maxSheetIndex = frame.sheetIndex;
-				}
-			}
-			return maxSheetIndex + 1;
-		}
-		
 		lib_internal function setSheetBitmap(bitmap:Bitmap):void
 		{
 			_bitmap = bitmap;
 			_rowNum = _bitmap.height / _frameSize.height;
 			_columnNum = _bitmap.width / _frameSize.width;
+			
 		}
 		
 		public function getFrame(frameNum:int):Frame
@@ -150,12 +132,7 @@ package com.kramer.frameSheet
 			{
 				throw new ArgumentError("帧编号必须在 1～" + _totalFrameNum + "之间");
 			}
-			var frame:Frame = _frames[frameNum - 1];
-			if(frame.hasContent == false)
-			{
-				frame.content = getFrameContent(frame.sheetIndex, frame.contenSize);				
-			}
-			return frame;
+			return _frames[frameNum - 1];
 		}
 		
 		private function getFrameContent(sheetIndex:int, contentSize:Rectangle):BitmapData
@@ -172,11 +149,6 @@ package com.kramer.frameSheet
 			var bitmapData:BitmapData = new BitmapData(contentSize.width, contentSize.height, true, 0xFF33FF);
 			bitmapData.copyPixels(_bitmap.bitmapData, contentRect, new Point(0, 0));
 			_contentMap.put(sheetIndex, bitmapData);
-			_extractedNum++;
-			if(_extractedNum >= _totalUniqueFrameNum)
-			{
-				disposeBitmap();
-			}
 			return bitmapData;
 		}
 		

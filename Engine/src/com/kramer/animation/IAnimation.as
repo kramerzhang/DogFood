@@ -27,10 +27,10 @@ package com.kramer.animation
 		function gotoAndStop(frame:Object):void;
 		function setLoopRange(startNum:int, endNum:int):void;
 		
-		function set delay(value:int):void;
-		function get delay():int;
+		function set frameRate(value:int):void;
+		function get frameRate():int;
 		
-		function step(currentTime:int):void;
+		function update(currentTime:int):void;
 		
 	}
 }

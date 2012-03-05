@@ -61,21 +61,21 @@ package com.kramer.entity
 			_animation.gotoAndPlay(_actionLabel.startNum);
 		}
 		
-		public function set delay(value:int):void
+		public function set frameRate(value:int):void
 		{
 			if(value <= 0)
 			{
 				throw new ArgumentError("delay shoud be greater than 0");
 			}
-			_animation.delay = value;
+			_animation.frameRate = value;
 		}
 		
-		public function get delay():int
+		public function get frameRate():int
 		{
-			return _animation.delay;
+			return _animation.frameRate;
 		}
 		
-		public function step(currentTime:int):void
+		public function update(currentTime:int):void
 		{
 			if(_animation.currentFrameNum == _actionLabel.startNum)
 			{
@@ -90,7 +90,7 @@ package com.kramer.entity
 			{
 				dispatchCommandEvent(frameCommand.content);
 			}
-			_animation.step(currentTime);
+			_animation.update(currentTime);
 		}
 		
 		private function dispatchActionEvent(type:String, action:String):void
