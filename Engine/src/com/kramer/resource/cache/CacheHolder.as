@@ -3,6 +3,7 @@ package com.kramer.resource.cache
 	/**
 	 *@author Kramer 
 	 */	
+	import com.kramer.core.IDisposable;
 	import com.kramer.resource.LoadableItemWrapper;
 	import com.kramer.resource.LoadingManager;
 	import com.kramer.resource.events.ResourceEvent;
@@ -126,6 +127,12 @@ package com.kramer.resource.cache
 				var entry:HeatIndexMapEntry = entryArr[entryIndex] as HeatIndexMapEntry;
 				if(_cachedItemMap.containsKey(entry.url))
 				{
+					var cachedItem:ILoadable = _cachedItemMap.get(entry.url);
+					var content:IDisposable = cachedItem.getContent() as IDisposable;
+					if(content != null)
+					{
+						content.dispose();
+					}
 					_cachedItemMap.remove(entry.url);
 					itemRemovedNum++;
 				}
@@ -153,6 +160,15 @@ package com.kramer.resource.cache
 		
 		public function clear():void
 		{
+			var cachedItemArr:Array = _cachedItemMap.getValues();
+			for(var cachedItem:ILoadable in cachedItemArr)
+			{
+				var content:IDisposable = cachedItem.getContent() as IDisposable;
+				if(content != null)
+				{
+					content.dispose();
+				}
+			}
 			_cachedItemMap.clear();
 			_heatIndexMap.clear();
 		}

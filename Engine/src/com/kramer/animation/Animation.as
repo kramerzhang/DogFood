@@ -10,6 +10,7 @@ package com.kramer.animation
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Sprite;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.geom.Point;
@@ -17,7 +18,7 @@ package com.kramer.animation
 	import flash.utils.getTimer;
 	
 	[Event(name="init", type = "flash.events.Event")]
-	public class Animation extends Bitmap implements IAnimation, IDisposable
+	public class Animation extends Sprite implements IAnimation, IDisposable
 	{
 		private var _resourceUrl:String;
 		private var _frameSheet:FrameSheet;
@@ -27,6 +28,7 @@ package com.kramer.animation
 		private var _startFrameNum:int;
 		private var _endFrameNum:int;
 		private var _currentFrame:Frame;
+		private var _lastFrame:Frame;
 		private var _delay:int;
 		private var _frameRate:int;
 		private var _lastUpdateTime:int;
@@ -39,13 +41,14 @@ package com.kramer.animation
 		
 		public function Animation()
 		{
-			super(null, "auto", true);
+			this.mouseChildren = false;
+			this.mouseEnabled = false;
 		}
 		
 		public function set resourceUrl(value:String):void
 		{
 			_resourceUrl = value;
-			ResourceManager.loadFrameSheet(_resourceUrl, onLoaded);
+			ResourceManager.getCachedFrameSheetItem(_resourceUrl, onLoaded);
 		}
 		
 		public function get resourceUrl():String
@@ -205,12 +208,7 @@ package com.kramer.animation
 				return;
 			}
 			_lastUpdateTime = currentTime;
-			_currentFrame = _frameSheet.getFrame(_currentFrameNum);
-			if(this.bitmapData != _currentFrame.content)
-			{
-				this.bitmapData = _currentFrame.content;
-				updatePosition();
-			}
+			drawFrame();
 			if(_isPlaying == true)
 			{
 				advanceFrameNum();
@@ -268,8 +266,18 @@ package com.kramer.animation
 			return _scaleY;
 		}
 		
-		private function updatePosition():void
+		private function drawFrame():void
 		{
+			_currentFrame = _frameSheet.getFrame(_currentFrameNum);
+			if(_lastFrame != null && _currentFrame.matrix.tx == _lastFrame.matrix.tx && _currentFrame.matrix.ty == _lastFrame.matrix.ty)
+			{
+				return;
+			}
+			this.graphics.clear();
+			this.graphics.beginBitmapFill(_frameSheet.bitmapData, _currentFrame.matrix);
+			this.graphics.drawRect(0, 0, _currentFrame.size.width, _currentFrame.size.height);
+			this.graphics.endFill();
+			_lastFrame = _currentFrame;
 			var anchor:Point = _currentFrame.anchor;
 			var frameContentOffset:Point = _currentFrame.contentOffset;
 			super.x = _x - (anchor.x - frameContentOffset.x) * _scaleX;

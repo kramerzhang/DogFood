@@ -7,6 +7,7 @@ package com.kramer.frameSheet
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.system.System;
@@ -16,6 +17,7 @@ package com.kramer.frameSheet
 	
 	public class FrameSheet implements IDisposable
 	{
+		private var _descData:ByteArray;
 		private var _frames:Vector.<Frame>;
 		private var _frameLabelMap:HashMap;
 		
@@ -41,23 +43,33 @@ package com.kramer.frameSheet
 		
 		private function initialize():void
 		{
-			_contentMap = new HashMap();
 			_logger = Logger.getLogger("frameSheet");
 		}
 		
 		lib_internal function readDescription(data:ByteArray):void
 		{
-			var descData:ByteArray = new ByteArray();
+			_descData = new ByteArray();;
 			var descDataLen:uint = data.readShort();
-			data.readBytes(descData, 0, descDataLen);
+			data.readBytes(_descData, 0, descDataLen);
+		}
+		
+		lib_internal function setSheetBitmap(bitmap:Bitmap):void
+		{
+			_bitmap = bitmap;
+			parseDescription();
+		}
+		
+		private function parseDescription():void
+		{
+			_totalFrameNum = _descData.readShort();
+			_frameAnchor = new Point(_descData.readShort(), _descData.readShort());
+			_frameSize = new Rectangle(0, 0, _descData.readShort(), _descData.readShort());
+			_columnNum = _bitmap.width / _frameSize.width;
+			_rowNum = _bitmap.height / _frameSize.height;
+			_totalKeyFrameNum = _descData.readShort();
 			
-			_totalFrameNum = descData.readShort();
-			_frameAnchor = new Point(descData.readShort(), descData.readShort());
-			_frameSize = new Rectangle(0, 0, descData.readShort(), descData.readShort());
-			_totalKeyFrameNum = descData.readShort();
-			
-			readFrames(descData);
-			readLabels(descData);
+			readFrames(_descData);
+			readLabels(_descData);
 		}
 		
 		private function readFrames(descData:ByteArray):void
@@ -87,7 +99,12 @@ package com.kramer.frameSheet
 				var contentOffset:Point = new Point(descData.readShort(), descData.readShort());
 				var contentSize:Rectangle = new Rectangle(0, 0, descData.readShort(), descData.readShort());
 				var sheetIndex:int = descData.readShort();
-				var frame:Frame = new Frame(keyNum, size, anchor, contentSize, contentOffset, sheetIndex);
+				var columnIndex:int = sheetIndex % _columnNum;
+				var rowIndex:int = sheetIndex / _columnNum;
+				var frameX:int = columnIndex * _frameSize.width;
+				var frameY:int = rowIndex * _frameSize.height;
+				var matrix:Matrix = new Matrix(1, 0, 0, 1, _bitmap.width - frameX, _bitmap.height - frameY);
+				var frame:Frame = new Frame(keyNum, size, anchor, contentOffset, matrix);
 				result.push(frame);
 			}
 			return result;
@@ -118,14 +135,6 @@ package com.kramer.frameSheet
 			}
 		}
 		
-		lib_internal function setSheetBitmap(bitmap:Bitmap):void
-		{
-			_bitmap = bitmap;
-			_rowNum = _bitmap.height / _frameSize.height;
-			_columnNum = _bitmap.width / _frameSize.width;
-			
-		}
-		
 		public function getFrame(frameNum:int):Frame
 		{
 			if(frameNum < 1 || frameNum > _totalFrameNum)
@@ -133,23 +142,6 @@ package com.kramer.frameSheet
 				throw new ArgumentError("帧编号必须在 1～" + _totalFrameNum + "之间");
 			}
 			return _frames[frameNum - 1];
-		}
-		
-		private function getFrameContent(sheetIndex:int, contentSize:Rectangle):BitmapData
-		{
-			if(_contentMap.containsKey(sheetIndex))
-			{
-				return _contentMap.get(sheetIndex) as BitmapData;
-			}			
-			var columnIndex:int = sheetIndex % _columnNum;
-			var rowIndex:int = sheetIndex / _columnNum;
-			var frameX:int = columnIndex * _frameSize.width;
-			var frameY:int = rowIndex * _frameSize.height;
-			var contentRect:Rectangle = new Rectangle(frameX, frameY, contentSize.width, contentSize.height);
-			var bitmapData:BitmapData = new BitmapData(contentSize.width, contentSize.height, true, 0xFF33FF);
-			bitmapData.copyPixels(_bitmap.bitmapData, contentRect, new Point(0, 0));
-			_contentMap.put(sheetIndex, bitmapData);
-			return bitmapData;
 		}
 		
 		public function get totalFrameNum():int
@@ -172,6 +164,11 @@ package com.kramer.frameSheet
 			return _frameLabelMap;
 		}
 		
+		public function get bitmapData():BitmapData
+		{
+			return _bitmap.bitmapData;
+		}
+		
 		private function disposeBitmap():void
 		{
 			if(_bitmap != null)
@@ -181,16 +178,20 @@ package com.kramer.frameSheet
 			}
 		}
 		
-		public function dispose():void
+		private function disposeFrames():void
 		{
-			disposeBitmap();
 			for each(var frame:Frame in _frames)
 			{
 				frame.dispose();
 			}
 			_frames = null;
+		}
+		
+		public function dispose():void
+		{
+			disposeBitmap();
+			disposeFrames();
 			_frameLabelMap = null;
-			_contentMap = null;
 		}
 		
 	}
