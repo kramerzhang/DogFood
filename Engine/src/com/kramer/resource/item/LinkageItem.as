@@ -4,6 +4,7 @@ package com.kramer.resource.item
 	 *@author Kramer 
 	 */	
 	import com.kramer.resource.constant.ResourceType;
+	import com.kramer.resource.events.ResourceEvent;
 	
 	import flash.display.DisplayObject;
 	import flash.system.ApplicationDomain;
@@ -17,6 +18,13 @@ package com.kramer.resource.item
 		public function LinkageItem(url:String)
 		{
 			super(url, null);
+		}
+		
+		override public function copyContent(item:ILoadable):void
+		{
+			var linkageItem:LinkageItem = item as LinkageItem;
+			_itemClz = linkageItem._itemClz;
+			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
 		}
 		
 		override public function getContent():*

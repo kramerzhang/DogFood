@@ -21,6 +21,13 @@ package com.kramer.resource.item
 			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
 		}
 		
+		override public function copyContent(item:ILoadable):void
+		{
+			var xmlItem:XmlItem = item as XmlItem;
+			_xml = xmlItem._xml;
+			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
+		}
+		
 		override public function getContent():*
 		{
 			return _xml;

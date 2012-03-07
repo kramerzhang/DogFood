@@ -114,6 +114,7 @@ package com.kramer.resource
 		public function fireItemLoadErrorEvent():void
 		{
 			_item.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
+			dispose();
 		}
 		
 		public function fireItemLoadProgressEvent(bytesLoaded:Number, bytesTotal:Number):void
@@ -121,15 +122,19 @@ package com.kramer.resource
 			_item.dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, bytesLoaded, bytesTotal));
 		}
 		
-		public function fireItemLoadCompleteEvent(content:*):void
+		public function copyContent(item:ILoadable):void
 		{
-			_item.dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, content));
+			_item.copyContent(item);
 		}
 		
 		public function dispose():void
 		{
 			removeItemEventListener();
 			_item = null;
+			_completeHandler = null;
+			_startHandler = null;
+			_progressHandler = null;
+			_errorHandler = null;
 		}
 	}
 }

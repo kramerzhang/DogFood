@@ -11,12 +11,11 @@ package com.kramer.frameSheet
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.system.System;
 	import flash.utils.ByteArray;
 
 	use namespace lib_internal;
 	
-	public class FrameSheet implements IDisposable, IReferenceCountable
+	public class FrameSheet implements IReferenceCountable
 	{
 		private var _descData:ByteArray;
 		private var _frames:Vector.<Frame>;
@@ -53,7 +52,7 @@ package com.kramer.frameSheet
 		
 		lib_internal function readDescription(data:ByteArray):void
 		{
-			_descData = new ByteArray();;
+			_descData = new ByteArray()
 			var descDataLen:uint = data.readShort();
 			data.readBytes(_descData, 0, descDataLen);
 		}
@@ -177,6 +176,10 @@ package com.kramer.frameSheet
 		public function set referenceCount(value:int):void
 		{
 			_referenceCount = value;
+			if(_referenceCount == 0)
+			{
+				dispose();
+			}
 		}
 		
 		public function get referenceCount():int
@@ -202,15 +205,15 @@ package com.kramer.frameSheet
 			_frames = null;
 		}
 		
-		public function dispose():void
+		private function dispose():void
 		{
-			this.referenceCount -= 1;
-			if(_referenceCount == 0)
-			{
-				disposeBitmap();
-				disposeFrames();
-				_frameLabelMap = null;
-			}
+			disposeBitmap();
+			disposeFrames();
+			_frameAnchor = null;
+			_frameSize = null;
+			_frameLabelMap = null;
+			_descData.clear();
+			_descData = null;
 		}
 		
 	}

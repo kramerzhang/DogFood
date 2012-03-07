@@ -63,6 +63,12 @@ package com.kramer.resource.item
 			_imageLoader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onInternalLoadError);
 		}
 		
+		override public function copyContent(item:ILoadable):void
+		{
+			_frameSheet = item.getContent() as FrameSheet;
+			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
+		}
+		
 		override public function getContent():*
 		{
 			_frameSheet.referenceCount += 1;

@@ -50,6 +50,14 @@ package com.kramer.resource.item
 			_loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onInternalLoadError);
 		}
 		
+		override public function copyContent(item:ILoadable):void
+		{
+			var swfItem:SwfItem  = item as SwfItem;
+			_content = swfItem._content;
+			_content.position = 0;
+			parseStream();
+		}
+		
 		override public function getContent():*
 		{
 			return _loader.contentLoaderInfo.content;

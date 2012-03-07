@@ -285,6 +285,7 @@ package com.kramer.animation
 		
 		public function dispose():void
 		{
+			_frameSheet.referenceCount -= 1;
 			_currentFrame = null;
 			_frameLabelMap = null;
 			_frameSheet = null;

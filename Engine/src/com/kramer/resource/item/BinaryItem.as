@@ -133,6 +133,14 @@ package com.kramer.resource.item
 			return _bytesTotal;
 		}
 		
+		public function copyContent(item:ILoadable):void
+		{
+			var clonedByteArr:ByteArray = item.getContent() as ByteArray;
+			clonedByteArr.position = 0;
+			_content = clonedByteArr;
+			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
+		}
+		
 		public function getContent():*
 		{
 			return _content;

@@ -220,8 +220,7 @@ package com.kramer.resource
 				var duplicatedItemWrapper:LoadableItemWrapper = _urlDuplicatedVec[i];
 				if(duplicatedItemWrapper.item.getUrl() == loadedItem.getUrl())
 				{
-					duplicatedItemWrapper.fireItemLoadCompleteEvent(loadedItem.getContent());
-					duplicatedItemWrapper.dispose();
+					duplicatedItemWrapper.copyContent(loadedItem);
 					_urlDuplicatedVec.splice(i, 1);
 				}
 			}

@@ -15,10 +15,14 @@ package com.kramer.resource.item
 		
 		function getBytesTotal():uint;
 		
+		function copyContent(item:ILoadable):void;
+		
 		function getContent():*;
 		
 		function getType():String;
 		
 		function cancel():Boolean;
+		
+		
 	}
 }

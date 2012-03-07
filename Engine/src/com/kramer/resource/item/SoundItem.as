@@ -92,6 +92,11 @@ package com.kramer.resource.item
 			return _sound.bytesTotal
 		}
 		
+		public function copyContent(item:ILoadable):void
+		{
+			
+		}
+		
 		public function getContent():*
 		{
 			return _sound;
