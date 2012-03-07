@@ -127,16 +127,20 @@ package com.kramer.resource.cache
 				var entry:HeatIndexMapEntry = entryArr[entryIndex] as HeatIndexMapEntry;
 				if(_cachedItemMap.containsKey(entry.url))
 				{
-					var cachedItem:ILoadable = _cachedItemMap.get(entry.url);
-					var content:IDisposable = cachedItem.getContent() as IDisposable;
-					if(content != null)
-					{
-						content.dispose();
-					}
+					disposeContent(_cachedItemMap.get(entry.url));
 					_cachedItemMap.remove(entry.url);
 					itemRemovedNum++;
 				}
 				entryIndex++;
+			}
+		}
+		
+		private function disposeContent(loadableItem:ILoadable):void
+		{
+			var content:IDisposable = loadableItem.getContent() as IDisposable;
+			if(content != null)
+			{
+				content.dispose();
 			}
 		}
 		
@@ -160,14 +164,10 @@ package com.kramer.resource.cache
 		
 		public function clear():void
 		{
-			var cachedItemArr:Array = _cachedItemMap.getValues();
-			for(var cachedItem:ILoadable in cachedItemArr)
+			var loadableItemArr:Array = _cachedItemMap.getValues();
+			for each(var loadableItem:ILoadable in loadableItemArr)
 			{
-				var content:IDisposable = cachedItem.getContent() as IDisposable;
-				if(content != null)
-				{
-					content.dispose();
-				}
+				disposeContent(loadableItem);
 			}
 			_cachedItemMap.clear();
 			_heatIndexMap.clear();

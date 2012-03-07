@@ -65,6 +65,7 @@ package com.kramer.resource.item
 		
 		override public function getContent():*
 		{
+			_frameSheet.referenceCount += 1;
 			return _frameSheet;
 		}
 		

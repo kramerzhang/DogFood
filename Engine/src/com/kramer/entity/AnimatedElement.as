@@ -20,6 +20,7 @@ package com.kramer.entity
 		private var _animation:IAnimation;
 		private var _wrappers:Vector.<ListenerWrapper>;
 		private var _actionLabel:FrameLabel;
+		private var _frameRate:int;
 		
 		public function AnimatedElement()
 		{
@@ -29,6 +30,7 @@ package com.kramer.entity
 		public function set resourceUrl(value:String):void
 		{
 			_animation = new Animation();
+			_animation.frameRate = 24;
 			_animation.resourceUrl = value;
 			_animation.addEventListener(Event.INIT, onAnimationInit);
 		}

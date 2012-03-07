@@ -17,16 +17,19 @@ package com.kramer.frameSheet
 		private var _anchor:Point;
 		//帧上可视范围相对帧左上角的偏移量
 		private var _contentOffset:Point;
+		//帧上最小图像区域
+		private var _contentSize:Rectangle;
 		//帧上附带的命令
 		private var _command:FrameCommand;
 		//记录frame在framesheet中的位置，绘制时使用
 		private var _matrix:Matrix;
 		
-		public function Frame(keyNum:int, size:Rectangle, anchor:Point, contentOffset:Point, matrix:Matrix)
+		public function Frame(keyNum:int, size:Rectangle, anchor:Point, contentSize:Rectangle, contentOffset:Point, matrix:Matrix)
 		{
 			_keyNum = keyNum;
 			_size = size;
 			_anchor = anchor;
+			_contentSize = contentSize;
 			_contentOffset = contentOffset;
 			_matrix = matrix;
 		}
@@ -44,6 +47,11 @@ package com.kramer.frameSheet
 		public function get anchor():Point
 		{
 			return _anchor;
+		}
+		
+		public function get contentSize():Rectangle
+		{
+			return _contentSize;
 		}
 
 		public function get contentOffset():Point
@@ -68,6 +76,10 @@ package com.kramer.frameSheet
 		
 		public function dispose():void
 		{
+			_size = null;
+			_anchor = null;
+			_contentSize = null;
+			_contentOffset = null;
 			_command = null;
 			_matrix = null;
 		}

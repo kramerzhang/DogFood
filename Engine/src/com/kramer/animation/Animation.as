@@ -28,7 +28,7 @@ package com.kramer.animation
 		private var _startFrameNum:int;
 		private var _endFrameNum:int;
 		private var _currentFrame:Frame;
-		private var _lastFrame:Frame;
+		private var _lastDrawFrame:Frame;
 		private var _delay:int;
 		private var _frameRate:int;
 		private var _lastUpdateTime:int;
@@ -269,19 +269,18 @@ package com.kramer.animation
 		private function drawFrame():void
 		{
 			_currentFrame = _frameSheet.getFrame(_currentFrameNum);
-			if(_lastFrame != null && _currentFrame.matrix.tx == _lastFrame.matrix.tx && _currentFrame.matrix.ty == _lastFrame.matrix.ty)
+			if(_lastDrawFrame == null || _currentFrame.matrix.tx != _lastDrawFrame.matrix.tx || _currentFrame.matrix.ty != _lastDrawFrame.matrix.ty)
 			{
-				return;
+				this.graphics.clear();
+				this.graphics.beginBitmapFill(_frameSheet.bitmapData, _currentFrame.matrix);
+				this.graphics.drawRect(0, 0, _currentFrame.contentSize.width, _currentFrame.contentSize.height);
+				this.graphics.endFill();
+				_lastDrawFrame = _currentFrame;
+				var anchor:Point = _currentFrame.anchor;
+				var frameContentOffset:Point = _currentFrame.contentOffset;
+				super.x = _x - (anchor.x - frameContentOffset.x) * _scaleX;
+				super.y = _y - (anchor.y - frameContentOffset.y) * _scaleY;
 			}
-			this.graphics.clear();
-			this.graphics.beginBitmapFill(_frameSheet.bitmapData, _currentFrame.matrix);
-			this.graphics.drawRect(0, 0, _currentFrame.size.width, _currentFrame.size.height);
-			this.graphics.endFill();
-			_lastFrame = _currentFrame;
-			var anchor:Point = _currentFrame.anchor;
-			var frameContentOffset:Point = _currentFrame.contentOffset;
-			super.x = _x - (anchor.x - frameContentOffset.x) * _scaleX;
-			super.y = _y - (anchor.y - frameContentOffset.y) * _scaleY;
 		}
 		
 		public function dispose():void

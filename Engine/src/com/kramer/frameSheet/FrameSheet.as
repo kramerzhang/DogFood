@@ -1,6 +1,7 @@
 package com.kramer.frameSheet
 {
 	import com.kramer.core.IDisposable;
+	import com.kramer.core.IReferenceCountable;
 	import com.kramer.core.lib_internal;
 	import com.kramer.log.Logger;
 	import com.kramer.trove.HashMap;
@@ -15,7 +16,7 @@ package com.kramer.frameSheet
 
 	use namespace lib_internal;
 	
-	public class FrameSheet implements IDisposable
+	public class FrameSheet implements IDisposable, IReferenceCountable
 	{
 		private var _descData:ByteArray;
 		private var _frames:Vector.<Frame>;
@@ -34,6 +35,9 @@ package com.kramer.frameSheet
 		//以frame索引值为Key，frame的BitmapData为Value
 		private var _contentMap:HashMap;
 		
+		//引用计数，当引用计数为0时释放资源
+		private var _referenceCount:int;
+		
 		private var _logger:Logger;
 		
 		public function FrameSheet()
@@ -43,6 +47,7 @@ package com.kramer.frameSheet
 		
 		private function initialize():void
 		{
+			_referenceCount = 0;
 			_logger = Logger.getLogger("frameSheet");
 		}
 		
@@ -101,10 +106,10 @@ package com.kramer.frameSheet
 				var sheetIndex:int = descData.readShort();
 				var columnIndex:int = sheetIndex % _columnNum;
 				var rowIndex:int = sheetIndex / _columnNum;
-				var frameX:int = columnIndex * _frameSize.width;
-				var frameY:int = rowIndex * _frameSize.height;
-				var matrix:Matrix = new Matrix(1, 0, 0, 1, _bitmap.width - frameX, _bitmap.height - frameY);
-				var frame:Frame = new Frame(keyNum, size, anchor, contentOffset, matrix);
+				var contentX:int = columnIndex * _frameSize.width + contentOffset.x;
+				var contentY:int = rowIndex * _frameSize.height + contentOffset.y;
+				var matrix:Matrix = new Matrix(1, 0, 0, 1, _bitmap.width - contentX, _bitmap.height - contentY);
+				var frame:Frame = new Frame(keyNum, size, anchor, contentSize, contentOffset, matrix);
 				result.push(frame);
 			}
 			return result;
@@ -169,6 +174,16 @@ package com.kramer.frameSheet
 			return _bitmap.bitmapData;
 		}
 		
+		public function set referenceCount(value:int):void
+		{
+			_referenceCount = value;
+		}
+		
+		public function get referenceCount():int
+		{
+			return _referenceCount;
+		}
+		
 		private function disposeBitmap():void
 		{
 			if(_bitmap != null)
@@ -189,9 +204,13 @@ package com.kramer.frameSheet
 		
 		public function dispose():void
 		{
-			disposeBitmap();
-			disposeFrames();
-			_frameLabelMap = null;
+			this.referenceCount -= 1;
+			if(_referenceCount == 0)
+			{
+				disposeBitmap();
+				disposeFrames();
+				_frameLabelMap = null;
+			}
 		}
 		
 	}
