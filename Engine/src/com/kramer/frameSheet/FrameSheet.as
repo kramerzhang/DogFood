@@ -1,6 +1,5 @@
 package com.kramer.frameSheet
 {
-	import com.kramer.core.IDisposable;
 	import com.kramer.core.IReferenceCountable;
 	import com.kramer.core.lib_internal;
 	import com.kramer.log.Logger;
@@ -8,7 +7,6 @@ package com.kramer.frameSheet
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
@@ -17,7 +15,6 @@ package com.kramer.frameSheet
 	
 	public class FrameSheet implements IReferenceCountable
 	{
-		private var _descData:ByteArray;
 		private var _frames:Vector.<Frame>;
 		private var _frameLabelMap:HashMap;
 		
@@ -31,13 +28,14 @@ package com.kramer.frameSheet
 		private var _rowNum:int;
 		private var _columnNum:int;
 		
+		//从frameSheet提取单元的个数，当单元都被提取后，释放frameSheet的大图资源
+		private var _extractedNum:int;
+		private var _totalUniqueFrameNum:int;
 		//以frame索引值为Key，frame的BitmapData为Value
 		private var _contentMap:HashMap;
 		
 		//引用计数，当引用计数为0时释放资源
 		private var _referenceCount:int;
-		
-		private var _logger:Logger;
 		
 		public function FrameSheet()
 		{
@@ -46,34 +44,23 @@ package com.kramer.frameSheet
 		
 		private function initialize():void
 		{
-			_referenceCount = 0;
-			_logger = Logger.getLogger("frameSheet");
+			_contentMap = new HashMap();
 		}
 		
-		lib_internal function readDescription(data:ByteArray):void
+		public function readDescription(data:ByteArray):void
 		{
-			_descData = new ByteArray()
+			var descData:ByteArray = new ByteArray();
 			var descDataLen:uint = data.readShort();
-			data.readBytes(_descData, 0, descDataLen);
-		}
-		
-		lib_internal function setSheetBitmap(bitmap:Bitmap):void
-		{
-			_bitmap = bitmap;
-			parseDescription();
-		}
-		
-		private function parseDescription():void
-		{
-			_totalFrameNum = _descData.readShort();
-			_frameAnchor = new Point(_descData.readShort(), _descData.readShort());
-			_frameSize = new Rectangle(0, 0, _descData.readShort(), _descData.readShort());
-			_columnNum = _bitmap.width / _frameSize.width;
-			_rowNum = _bitmap.height / _frameSize.height;
-			_totalKeyFrameNum = _descData.readShort();
+			data.readBytes(descData, 0, descDataLen);
 			
-			readFrames(_descData);
-			readLabels(_descData);
+			_totalFrameNum = descData.readShort();
+			_frameAnchor = new Point(descData.readShort(), descData.readShort());
+			_frameSize = new Rectangle(0, 0, descData.readShort(), descData.readShort());
+			_totalKeyFrameNum = descData.readShort();
+			
+			readFrames(descData);
+			readLabels(descData);
+			_totalUniqueFrameNum = calculateTotalUniqueFrameNum();
 		}
 		
 		private function readFrames(descData:ByteArray):void
@@ -103,12 +90,7 @@ package com.kramer.frameSheet
 				var contentOffset:Point = new Point(descData.readShort(), descData.readShort());
 				var contentSize:Rectangle = new Rectangle(0, 0, descData.readShort(), descData.readShort());
 				var sheetIndex:int = descData.readShort();
-				var columnIndex:int = sheetIndex % _columnNum;
-				var rowIndex:int = sheetIndex / _columnNum;
-				var contentX:int = columnIndex * _frameSize.width;
-				var contentY:int = rowIndex * _frameSize.height;
-				var matrix:Matrix = new Matrix(1, 0, 0, 1, _bitmap.width - contentX, _bitmap.height - contentY);
-				var frame:Frame = new Frame(keyNum, size, anchor, contentSize, contentOffset, matrix);
+				var frame:Frame = new Frame(keyNum, size, anchor, contentSize, contentOffset, sheetIndex);
 				result.push(frame);
 			}
 			return result;
@@ -139,13 +121,62 @@ package com.kramer.frameSheet
 			}
 		}
 		
+		private function calculateTotalUniqueFrameNum():int
+		{
+			var maxSheetIndex:int = 0;
+			var len:int = _frames.length;
+			for(var i:int = 0; i < len; i ++)
+			{
+				var frame:Frame = _frames[i];
+				if(frame.sheetIndex > maxSheetIndex)
+				{
+					maxSheetIndex = frame.sheetIndex;
+				}
+			}
+			return maxSheetIndex + 1;
+		}
+		
+		public function setSheetBitmap(bitmap:Bitmap):void
+		{
+			_bitmap = bitmap;
+			_rowNum = _bitmap.height / _frameSize.height;
+			_columnNum = _bitmap.width / _frameSize.width;
+		}
+		
 		public function getFrame(frameNum:int):Frame
 		{
 			if(frameNum < 1 || frameNum > _totalFrameNum)
 			{
 				throw new ArgumentError("帧编号必须在 1～" + _totalFrameNum + "之间");
 			}
-			return _frames[frameNum - 1];
+			var frame:Frame = _frames[frameNum - 1];
+			if(frame.hasContent == false)
+			{
+				frame.content = getFrameContent(frame.sheetIndex, frame.contenSize);				
+			}
+			return frame;
+		}
+		
+		private function getFrameContent(sheetIndex:int, contentSize:Rectangle):BitmapData
+		{
+			if(_contentMap.containsKey(sheetIndex))
+			{
+				return _contentMap.get(sheetIndex) as BitmapData;
+			}			
+			var columnIndex:int = sheetIndex % _columnNum;
+			var rowIndex:int = sheetIndex / _columnNum;
+			var frameX:int = columnIndex * _frameSize.width;
+			var frameY:int = rowIndex * _frameSize.height;
+			var contentRect:Rectangle = new Rectangle(frameX, frameY, contentSize.width, contentSize.height);
+			var bitmapData:BitmapData = new BitmapData(contentSize.width, contentSize.height, true, 0xFF33FF);
+			bitmapData.copyPixels(_bitmap.bitmapData, contentRect, new Point(0, 0));
+			_contentMap.put(sheetIndex, bitmapData);
+			_extractedNum++;
+			if(_extractedNum >= _totalUniqueFrameNum)
+			{
+				disposeBitmap();
+			}
+			return bitmapData;
 		}
 		
 		public function get totalFrameNum():int
@@ -209,11 +240,11 @@ package com.kramer.frameSheet
 		{
 			disposeBitmap();
 			disposeFrames();
+			_contentMap.clear();
+			_contentMap = null;
 			_frameAnchor = null;
 			_frameSize = null;
 			_frameLabelMap = null;
-			_descData.clear();
-			_descData = null;
 		}
 		
 	}

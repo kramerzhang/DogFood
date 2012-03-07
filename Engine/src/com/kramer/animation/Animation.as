@@ -9,16 +9,11 @@ package com.kramer.animation
 	import com.kramer.trove.HashMap;
 	
 	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Sprite;
-	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.utils.getTimer;
 	
 	[Event(name="init", type = "flash.events.Event")]
-	public class Animation extends Sprite implements IAnimation, IDisposable
+	public class Animation extends Bitmap implements IAnimation, IDisposable
 	{
 		private var _resourceUrl:String;
 		private var _frameSheet:FrameSheet;
@@ -28,7 +23,6 @@ package com.kramer.animation
 		private var _startFrameNum:int;
 		private var _endFrameNum:int;
 		private var _currentFrame:Frame;
-		private var _lastDrawFrame:Frame;
 		private var _delay:int;
 		private var _frameRate:int;
 		private var _lastUpdateTime:int;
@@ -41,8 +35,7 @@ package com.kramer.animation
 		
 		public function Animation()
 		{
-			this.mouseChildren = false;
-			this.mouseEnabled = false;
+			super();
 		}
 		
 		public function set resourceUrl(value:String):void
@@ -269,13 +262,9 @@ package com.kramer.animation
 		private function drawFrame():void
 		{
 			_currentFrame = _frameSheet.getFrame(_currentFrameNum);
-			if(_lastDrawFrame == null || _currentFrame.matrix.tx != _lastDrawFrame.matrix.tx || _currentFrame.matrix.ty != _lastDrawFrame.matrix.ty)
+			if(this.bitmapData != _currentFrame.content)
 			{
-				this.graphics.clear();
-				this.graphics.beginBitmapFill(_frameSheet.bitmapData, _currentFrame.matrix);
-				this.graphics.drawRect(0, 0, _currentFrame.contentSize.width, _currentFrame.contentSize.height);
-				this.graphics.endFill();
-				_lastDrawFrame = _currentFrame;
+				this.bitmapData = _currentFrame.content;
 				var anchor:Point = _currentFrame.anchor;
 				var frameContentOffset:Point = _currentFrame.contentOffset;
 				super.x = _x - (anchor.x - frameContentOffset.x) * _scaleX;
