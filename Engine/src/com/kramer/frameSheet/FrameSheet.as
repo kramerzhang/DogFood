@@ -106,8 +106,8 @@ package com.kramer.frameSheet
 				var sheetIndex:int = descData.readShort();
 				var columnIndex:int = sheetIndex % _columnNum;
 				var rowIndex:int = sheetIndex / _columnNum;
-				var contentX:int = columnIndex * _frameSize.width + contentOffset.x;
-				var contentY:int = rowIndex * _frameSize.height + contentOffset.y;
+				var contentX:int = columnIndex * _frameSize.width;
+				var contentY:int = rowIndex * _frameSize.height;
 				var matrix:Matrix = new Matrix(1, 0, 0, 1, _bitmap.width - contentX, _bitmap.height - contentY);
 				var frame:Frame = new Frame(keyNum, size, anchor, contentSize, contentOffset, matrix);
 				result.push(frame);
