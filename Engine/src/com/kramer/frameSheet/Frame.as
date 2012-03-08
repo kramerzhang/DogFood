@@ -99,6 +99,11 @@ package com.kramer.frameSheet
 				_content.dispose();
 				_content = null;
 			}
+			_size = null;
+			_anchor = null;
+			_command = null;
+			_contentOffset = null;
+			_contentSize = null;
 		}
 		
 	}

@@ -47,7 +47,7 @@ package com.kramer.frameSheet
 			_contentMap = new HashMap();
 		}
 		
-		public function readDescription(data:ByteArray):void
+		lib_internal function readDescription(data:ByteArray):void
 		{
 			var descData:ByteArray = new ByteArray();
 			var descDataLen:uint = data.readShort();
@@ -136,7 +136,7 @@ package com.kramer.frameSheet
 			return maxSheetIndex + 1;
 		}
 		
-		public function setSheetBitmap(bitmap:Bitmap):void
+		lib_internal function setSheetBitmap(bitmap:Bitmap):void
 		{
 			_bitmap = bitmap;
 			_rowNum = _bitmap.height / _frameSize.height;

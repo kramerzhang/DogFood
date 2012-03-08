@@ -48,6 +48,7 @@ package com.kramer.resource.item
 			var loaderInfo:LoaderInfo = evt.target as LoaderInfo;
 			var bitmap:Bitmap = loaderInfo.content as Bitmap;
 			_frameSheet.setSheetBitmap(bitmap);
+			_frameSheet.referenceCount += 1;
 			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
 		}
 		
@@ -65,13 +66,14 @@ package com.kramer.resource.item
 		
 		override public function copyContent(item:ILoadable):void
 		{
-			_frameSheet = item.getContent() as FrameSheet;
+			var frameSheetItem:FrameSheetItem = item as FrameSheetItem;
+			_frameSheet = frameSheetItem._frameSheet;
+			_frameSheet.referenceCount += 1;
 			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
 		}
 		
 		override public function getContent():*
 		{
-			_frameSheet.referenceCount += 1;
 			return _frameSheet;
 		}
 		

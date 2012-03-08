@@ -19,15 +19,21 @@ package com.kramer.animation
 		private var _frameSheet:FrameSheet;
 		private var _frameLabelMap:HashMap;
 		private var _currentFrameNum:int = 1;
+		
 		private var _totalFramesNum:int;
 		private var _startFrameNum:int;
 		private var _endFrameNum:int;
 		private var _currentFrame:Frame;
+		private var _frameObject:Object;
+		private var _frameRangeObject:FrameRangeObect;
+		
 		private var _delay:int;
 		private var _frameRate:int;
 		private var _lastUpdateTime:int;
-		private var _isPlaying:Boolean = false;
+		
+		private var _isPlaying:Boolean = true;
 		private var _isReady:Boolean = false;
+		
 		private var _x:Number = 0;
 		private var _y:Number = 0;
 		private var _scaleX:Number = 1;
@@ -59,11 +65,51 @@ package com.kramer.animation
 		private function initialize():void
 		{
 			_isReady = true;
-			_isPlaying = true;
 			_totalFramesNum = _frameSheet.totalFrameNum;
 			_frameLabelMap = _frameSheet.frameLabelMap;
-			_startFrameNum = 1;
-			_endFrameNum = _totalFramesNum;
+			initFrame();
+			initFrameRange();
+		}
+		
+		private function initFrame():void
+		{
+			if(_frameObject != null)
+			{
+				if(_frameObject is int)
+				{
+					validateFrameNum(_frameObject as int);
+					_currentFrameNum = _frameObject as int;
+				}
+				else if(_frameObject is String)
+				{
+					_currentFrameNum = getFrameNumByLabel(_frameObject as String);
+				}
+				else
+				{
+					throw new ArgumentError("frame should be int or string");
+				}
+			}
+			else
+			{
+				_currentFrameNum = 1;
+			}
+		}
+		
+		private function initFrameRange():void
+		{
+			if(_frameRangeObject != null)
+			{
+				validateFrameNum(_frameRangeObject.start);
+				validateFrameNum(_frameRangeObject.end);
+				_startFrameNum = _frameRangeObject.start;
+				_endFrameNum = _frameRangeObject.end;
+			}
+			else
+			{
+				_startFrameNum = 1;
+				_endFrameNum = _totalFramesNum;
+			}
+			
 		}
 		
 		private function dispatchInitEvent():void
@@ -119,46 +165,31 @@ package com.kramer.animation
 		
 		public function gotoAndPlay(frame:Object):void
 		{
-			if(frame is int)
-			{
-				validateFrameNum(frame as int);
-				_currentFrameNum = frame as int;
-			}
-			else if(frame is String)
-			{
-				_currentFrameNum = getFrameNumByLabel(frame as String);
-			}
-			else
-			{
-				throw new ArgumentError("frame should be int or string");
-			}
 			_isPlaying = true;
+			_frameObject = frame;
+			if(_isReady == true)
+			{
+				initFrame();
+			}
 		}
 		
 		public function gotoAndStop(frame:Object):void
 		{
-			if(frame is int)
-			{
-				validateFrameNum(frame as int);
-				_currentFrameNum = frame as int;
-			}
-			else if(frame is String)
-			{
-				_currentFrameNum = getFrameNumByLabel(frame as String);
-			}
-			else
-			{
-				throw new ArgumentError("frame should be int or string");
-			}
 			_isPlaying = false;
+			_frameObject = frame;
+			if(_isReady == true)
+			{
+				initFrame();
+			}
 		}
 		
 		public function setLoopRange(startNum:int, endNum:int):void
 		{
-			validateFrameNum(startNum);
-			validateFrameNum(endNum);
-			_startFrameNum = startNum;
-			_endFrameNum = endNum;
+			_frameRangeObject = new FrameRangeObect(startNum, endNum);
+			if(_isReady == true)
+			{
+				initFrameRange();
+			}
 		}
 		
 		private function validateFrameNum(frameNum:int):void
@@ -181,6 +212,10 @@ package com.kramer.animation
 		
 		public function set frameRate(value:int):void
 		{
+			if(value <= 0)
+			{
+				throw new ArgumentError("delay shoud be greater than 0");
+			}
 			_frameRate = value;
 			_delay = 1000 / _frameRate
 		}
@@ -205,6 +240,19 @@ package com.kramer.animation
 			if(_isPlaying == true)
 			{
 				advanceFrameNum();
+			}
+		}
+		
+		private function drawFrame():void
+		{
+			_currentFrame = _frameSheet.getFrame(_currentFrameNum);
+			if(this.bitmapData != _currentFrame.content)
+			{
+				this.bitmapData = _currentFrame.content;
+				var anchor:Point = _currentFrame.anchor;
+				var frameContentOffset:Point = _currentFrame.contentOffset;
+				super.x = _x - (anchor.x - frameContentOffset.x) * _scaleX;
+				super.y = _y - (anchor.y - frameContentOffset.y) * _scaleY;
 			}
 		}
 		
@@ -259,19 +307,6 @@ package com.kramer.animation
 			return _scaleY;
 		}
 		
-		private function drawFrame():void
-		{
-			_currentFrame = _frameSheet.getFrame(_currentFrameNum);
-			if(this.bitmapData != _currentFrame.content)
-			{
-				this.bitmapData = _currentFrame.content;
-				var anchor:Point = _currentFrame.anchor;
-				var frameContentOffset:Point = _currentFrame.contentOffset;
-				super.x = _x - (anchor.x - frameContentOffset.x) * _scaleX;
-				super.y = _y - (anchor.y - frameContentOffset.y) * _scaleY;
-			}
-		}
-		
 		public function dispose():void
 		{
 			_frameSheet.referenceCount -= 1;
@@ -279,5 +314,17 @@ package com.kramer.animation
 			_frameLabelMap = null;
 			_frameSheet = null;
 		}
+	}
+}
+
+class FrameRangeObect
+{
+	public var start:int;
+	public var end:int;
+	
+	public function FrameRangeObect(start:int, end:int)
+	{
+		this.start = start;
+		this.end = end;
 	}
 }

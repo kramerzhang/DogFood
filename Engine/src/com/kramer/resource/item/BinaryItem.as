@@ -35,12 +35,6 @@ package com.kramer.resource.item
 		{
 			super(this);
 			_url = url;
-			initialize();
-		}
-		
-		private function initialize():void
-		{
-			_streamLoader = new URLStream();
 		}
 		
 		public function load():void
@@ -48,6 +42,7 @@ package com.kramer.resource.item
 			_content = FileStorage.getFile(_url);
 			if(_content == null)
 			{
+				_streamLoader = new URLStream();
 				addLoaderEventListener();
 				_streamLoader.load(new URLRequest(_url));
 			}
@@ -135,9 +130,13 @@ package com.kramer.resource.item
 		
 		public function copyContent(item:ILoadable):void
 		{
-			var clonedByteArr:ByteArray = item.getContent() as ByteArray;
-			clonedByteArr.position = 0;
-			_content = clonedByteArr;
+			var binaryItem:BinaryItem = item as BinaryItem;
+			var source:ByteArray = binaryItem._content;
+			var sourcePostion:int = source.position;
+			source.position = 0;
+			_content = new ByteArray();
+			source.readBytes(_content);
+			source.position = sourcePostion;
 			dispatchEvent(new ResourceEvent(ResourceEvent.COMPLETE, getContent()));
 		}
 		

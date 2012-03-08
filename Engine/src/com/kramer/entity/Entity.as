@@ -47,6 +47,11 @@ package com.kramer.entity
 			return _position;
 		}
 		
+		public function update(currentTime:int):void
+		{
+			
+		}
+		
 		public function dispose():void
 		{
 		}

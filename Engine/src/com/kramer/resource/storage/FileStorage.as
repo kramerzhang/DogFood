@@ -1,5 +1,6 @@
 package com.kramer.resource.storage
 {
+	import com.kramer.Config;
 	import com.kramer.SharedObject.SharedObjectManager;
 	import com.kramer.utils.UrlUtil;
 	
@@ -96,6 +97,10 @@ package com.kramer.resource.storage
 		
 		public static function getFile(url:String):ByteArray
 		{
+			if(Config.DEBUG_MODE == true)
+			{
+				return null;
+			}
 			var originalUrl:String = UrlUtil.getOriginalUrl(url);
 			var soName:String = UrlUtil.getReletiveUrl(originalUrl);
 			var ver:int = UrlUtil.getVersionByUrl(url);
@@ -110,6 +115,10 @@ package com.kramer.resource.storage
 		
 		public static function addFile(url:String, file:ByteArray):void
 		{
+			if(Config.DEBUG_MODE == true)
+			{
+				return;
+			}
 			if(_state != STATE_ACCEPT)
 			{
 				return;

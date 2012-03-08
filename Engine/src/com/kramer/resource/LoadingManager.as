@@ -33,7 +33,7 @@ package com.kramer.resource
 			_urlDuplicatedVec = new Vector.<LoadableItemWrapper>();
 			_loadingItemMap = new HashMap();
 			_logger = Logger.getLogger("LoadingManager");
-			_logger.setLevel(LogLevel.ERROR);
+			_logger.setLevel(LogLevel.ALL);
 		}
 		
 		public static function addItem(wrapper:LoadableItemWrapper):void

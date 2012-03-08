@@ -21,18 +21,19 @@ package com.kramer.entity
 		private var _wrappers:Vector.<ListenerWrapper>;
 		private var _actionLabel:FrameLabel;
 		private var _frameRate:int;
+		private var _action:String;
+		private var _isReady:Boolean = false;
 		
-		public function AnimatedElement()
+		public function AnimatedElement(defaultFrameRate:int = 24)
 		{
-			super();
+			_frameRate = defaultFrameRate;
 		}
 		
 		public function set resourceUrl(value:String):void
 		{
 			_animation = new Animation();
-			_animation.frameRate = 24;
-			_animation.resourceUrl = value;
 			_animation.addEventListener(Event.INIT, onAnimationInit);
+			_animation.resourceUrl = value;
 		}
 		
 		public function get resourceUrl():String
@@ -43,6 +44,9 @@ package com.kramer.entity
 		private function onAnimationInit(evt:Event):void
 		{
 			setAnimation(_animation);
+			_isReady = true;
+			initAction();
+			initFrameRate();
 			dispatchEvent(new EntityEvent(EntityEvent.CONSTRUCTED));
 		}
 		
@@ -54,31 +58,56 @@ package com.kramer.entity
 		
 		public function playAction(action:String):void
 		{
-			_actionLabel = _animation.frameLabelMap.get(action);
-			if(_actionLabel == null)
+			_action = action;
+			if(_isReady == true)
 			{
-				throw new ArgumentError("action not exist!");
+				initAction();
 			}
-			_animation.setLoopRange(_actionLabel.startNum, _actionLabel.endNum);
-			_animation.gotoAndPlay(_actionLabel.startNum);
+		}
+		
+		private function initAction():void
+		{
+			if(_action != null)
+			{
+				_actionLabel = _animation.frameLabelMap.get(_action);
+				if(_actionLabel == null)
+				{
+					throw new ArgumentError("action not exist!");
+				}
+				_animation.setLoopRange(_actionLabel.startNum, _actionLabel.endNum);
+				_animation.gotoAndPlay(_actionLabel.startNum);
+			}
+			else
+			{
+				_actionLabel = new FrameLabel("none", 1, _animation.totalFrameNum);
+			}
 		}
 		
 		public function set frameRate(value:int):void
 		{
-			if(value <= 0)
+			_frameRate = value;
+			if(_isReady == true)
 			{
-				throw new ArgumentError("delay shoud be greater than 0");
+				initFrameRate();
 			}
-			_animation.frameRate = value;
+		}
+		
+		private function initFrameRate():void
+		{
+			_animation.frameRate = _frameRate;
 		}
 		
 		public function get frameRate():int
 		{
-			return _animation.frameRate;
+			return _frameRate;
 		}
-		
-		public function update(currentTime:int):void
+				
+		override public function update(currentTime:int):void
 		{
+			if(_isReady == false)
+			{
+				return;
+			}
 			if(_animation.currentFrameNum == _actionLabel.startNum)
 			{
 				dispatchActionEvent(ActionEvent.ACTION_START, _actionLabel.name);
@@ -169,6 +198,9 @@ package com.kramer.entity
 		override public function dispose():void
 		{
 			removeAllListenerWrapper();
+			_animation.dispose();
+			_animation = null;
+			_actionLabel = null;
 		}
 	}
 }

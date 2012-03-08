@@ -68,6 +68,7 @@ package com.kramer.resource.cache
 				recordToHeatIndexMap(url);
 				var cachedItem:ILoadable = _cachedItemMap.get(url) as ILoadable;
 				var newItem:ILoadable = LoadableItemFactory.createItem(type, url);
+				var wrapper:LoadableItemWrapper = new LoadableItemWrapper(newItem, completeHandler, startHandler, progressHandler, errorHandler, priority);
 				newItem.copyContent(cachedItem);
 			}
 			else
