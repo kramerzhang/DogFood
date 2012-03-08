@@ -31,6 +31,10 @@ package com.kramer.resource.storage
 		
 		private static function initialize():void
 		{
+			if(Config.DEBUG_MODE == true)
+			{
+				return;
+			}
 			_state = STATE_SUSPEND;
 			_versionObj = SharedObjectManager.getCommonSharedObject(ASSETS_SO_NAME);
 			if(_versionObj.data[KEY_VERSION] == null)
@@ -49,6 +53,10 @@ package com.kramer.resource.storage
 		
 		public static function askForStorageSpace():void
 		{
+			if(Config.DEBUG_MODE == true)
+			{
+				return;
+			}
 			if(_state == STATE_ACCEPT)
 			{
 				return;

@@ -313,6 +313,8 @@ package com.kramer.animation
 			_currentFrame = null;
 			_frameLabelMap = null;
 			_frameSheet = null;
+			_frameObject = null;
+			_frameRangeObject = null;
 		}
 	}
 }

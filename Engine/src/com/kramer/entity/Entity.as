@@ -54,6 +54,7 @@ package com.kramer.entity
 		
 		public function dispose():void
 		{
+			_position = null;
 		}
 	}
 }

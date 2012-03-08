@@ -94,7 +94,8 @@ package com.kramer.resource.item
 		
 		public function copyContent(item:ILoadable):void
 		{
-			
+			var soundItem:SoundItem = item as SoundItem;
+			_sound = soundItem._sound;
 		}
 		
 		public function getContent():*

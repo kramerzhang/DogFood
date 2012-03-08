@@ -197,6 +197,7 @@ package com.kramer.entity
 		
 		override public function dispose():void
 		{
+			super.dispose();
 			removeAllListenerWrapper();
 			_animation.dispose();
 			_animation = null;

@@ -245,7 +245,6 @@ package com.kramer.resource
 				if(duplicatedItemWrapper.item.getUrl() == errorItem.getUrl())
 				{
 					duplicatedItemWrapper.fireItemLoadErrorEvent();
-					duplicatedItemWrapper.dispose();
 					_urlDuplicatedVec.splice(i, 1);
 				}
 			}
