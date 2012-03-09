@@ -29,17 +29,17 @@ package com.kramer.utils
 			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
-		public static function doCallbackAtFrame(mc:MovieClip, frameNum:int, callback:Function, totalExecutetimes:int = 1):void
+		public static function executeAtFrame(mc:MovieClip, frameNum:int, callback:Function, totalCount:int = 1):void
 		{
-			var executedTimes:int = 0;
+			var count:int = 0;
 			var onEnterFrame:Function = function (evt:Event):void
 			{
 				var target:MovieClip = evt.target as MovieClip;
 				if(target.currentFrame == frameNum)
 				{
 					callback();
-					executedTimes++;
-					if(executedTimes >= totalExecutetimes)
+					count++;
+					if(count >= totalCount)
 					{
 						target.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 					}
@@ -47,5 +47,25 @@ package com.kramer.utils
 			}
 			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
+		
+		public static function executeAtLabel(mc:MovieClip, label:String, callback:Function, totalCount:int = 1):void
+		{
+			var count:int = 0;
+			var onEnterFrame:Function = function (evt:Event):void
+			{
+				var target:MovieClip = evt.target as MovieClip;
+				if(target.currentLabel == label)
+				{
+					callback();
+					count++;
+					if(count >= totalCount)
+					{
+						target.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+					}
+				}
+			}
+			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		}
+		
 	}
 }
