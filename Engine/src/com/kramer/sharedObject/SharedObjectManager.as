@@ -1,4 +1,4 @@
-package com.kramer.SharedObject
+package com.kramer.sharedObject
 {
 	import flash.net.SharedObject;
 

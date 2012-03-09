@@ -1,7 +1,7 @@
 package com.kramer.resource.storage
 {
 	import com.kramer.Config;
-	import com.kramer.SharedObject.SharedObjectManager;
+	import com.kramer.sharedObject.SharedObjectManager;
 	import com.kramer.utils.UrlUtil;
 	
 	import flash.events.NetStatusEvent;
