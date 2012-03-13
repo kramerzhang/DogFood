@@ -2,6 +2,13 @@ package com.kramer.trove
 {
 	public class Color
 	{
+		public static const WHITE:uint 	= 0xFFFFFF;
+		public static const RED:uint	= 0xFF0000;
+		public static const GREEN:uint 	= 0x00FF00;
+		public static const BLUE:uint 	= 0x0000FF;
+		public static const YELLOW:uint	= 0xFFFF00;
+		public static const BLACK:uint	= 0x000000;
+		
 		private var _r:uint;
 		private var _g:uint;
 		private var _b:uint;
