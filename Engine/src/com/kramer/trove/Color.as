@@ -1,5 +1,7 @@
 package com.kramer.trove
 {
+	import com.kramer.debug.Debug;
+
 	public class Color
 	{
 		public static const WHITE:uint 	= 0xFFFFFF;
@@ -71,10 +73,7 @@ package com.kramer.trove
 		
 		private function checkParameter(value:uint):void
 		{
-			if(value < 0 || value > 0xff )
-			{
-				throw new ArgumentError("颜色的分量值必须为0～255");
-			}
+			Debug.assert((value >= 0 && value < 0xFF), "value should be in the range of 0 ~255");
 		}
 		
 		public function get argb():uint
@@ -111,16 +110,13 @@ package com.kramer.trove
 		}
 		
 		public static function parseColorFromString(value:String):Color
-		{
+		{			
 			if(value.indexOf("#") == 0)
 			{
 				value = value.substr(1);
 			}
 			var num:uint = parseInt(value, 16);
-			if(isNaN(num) == true)
-			{
-				throw new ArgumentError("参数不能解析为数字");
-			}
+			Debug.assert(isNaN(num) == false, "can't parse param to number");
 			return parseColorFromNumber(num);
 		}
 	}

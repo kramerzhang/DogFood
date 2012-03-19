@@ -1,11 +1,17 @@
 package com.kramer.debug
 {
+	import flash.debugger.enterDebugger;
+
 	public class Debug
 	{
-		public static function assert(expression:Boolean, errorMessage:String):void
+		public static function assert(condition:Boolean, errorMessage:String, enterDebugger:Boolean = false):void
 		{
-			if(expression == false)
+			if(condition == false)
 			{
+				if(enterDebugger == true)
+				{
+					enterDebugger();
+				}
 				throw new AssertionError(errorMessage);
 			}
 		}

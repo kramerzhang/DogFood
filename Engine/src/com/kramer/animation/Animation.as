@@ -1,6 +1,7 @@
 package com.kramer.animation
 {
 	import com.kramer.core.IDisposable;
+	import com.kramer.debug.Debug;
 	import com.kramer.frameSheet.Frame;
 	import com.kramer.frameSheet.FrameLabel;
 	import com.kramer.frameSheet.FrameSheet;
@@ -84,10 +85,6 @@ package com.kramer.animation
 				{
 					_currentFrameNum = getFrameNumByLabel(_frameObject as String);
 				}
-				else
-				{
-					throw new ArgumentError("frame should be int or string");
-				}
 			}
 			else
 			{
@@ -165,6 +162,7 @@ package com.kramer.animation
 		
 		public function gotoAndPlay(frame:Object):void
 		{
+			Debug.assert((frame is int) || (frame is String), "frame should be int or string", true);
 			_isPlaying = true;
 			_frameObject = frame;
 			if(_isReady == true)
@@ -194,10 +192,7 @@ package com.kramer.animation
 		
 		private function validateFrameNum(frameNum:int):void
 		{
-			if(frameNum <= 0 || frameNum > _totalFramesNum)
-			{
-				throw new ArgumentError("frameNum out of range");
-			}
+			Debug.assert(frameNum > 0 && frameNum <= _totalFramesNum, "frameNum out of range");
 		}
 		
 		private function getFrameNumByLabel(label:String):int
@@ -212,10 +207,7 @@ package com.kramer.animation
 		
 		public function set frameRate(value:int):void
 		{
-			if(value <= 0)
-			{
-				throw new ArgumentError("delay shoud be greater than 0");
-			}
+			Debug.assert(value > 0, "frameRate should be greater than 0");
 			_frameRate = value;
 			_delay = 1000 / _frameRate
 		}

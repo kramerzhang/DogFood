@@ -1,5 +1,7 @@
 package com.kramer.utils
 {
+	import com.kramer.debug.Debug;
+	
 	import flash.geom.Point;
 
 	/**
@@ -137,10 +139,7 @@ package com.kramer.utils
 		{
 			var result:String = str;
 			var matchArr:Array = str.match(TOKEN_PATTERN);
-			if(matchArr.length != args.length)
-			{
-				throw new ArgumentError("args length not match the token number in the string");
-			}
+			Debug.assert(matchArr.length == args.length, "args length not match the token number in the string");
 			var len:int = matchArr.length;
 			for(var i:int = 0; i < len; i++)
 			{

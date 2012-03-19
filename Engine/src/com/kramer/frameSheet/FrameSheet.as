@@ -2,6 +2,7 @@ package com.kramer.frameSheet
 {
 	import com.kramer.core.IReferenceCountable;
 	import com.kramer.core.lib_internal;
+	import com.kramer.debug.Debug;
 	import com.kramer.log.Logger;
 	import com.kramer.trove.HashMap;
 	
@@ -145,10 +146,7 @@ package com.kramer.frameSheet
 		
 		public function getFrame(frameNum:int):Frame
 		{
-			if(frameNum < 1 || frameNum > _totalFrameNum)
-			{
-				throw new ArgumentError("帧编号必须在 1～" + _totalFrameNum + "之间");
-			}
+			Debug.assert((frame > 1 && frame <= _totalFrameNum), "frameNum should be in the range of 1~" + _totalFrameNum);
 			var frame:Frame = _frames[frameNum - 1];
 			if(frame.hasContent == false)
 			{

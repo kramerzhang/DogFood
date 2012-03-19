@@ -1,5 +1,7 @@
 package com.kramer.pool
 {
+	import com.kramer.debug.Debug;
+
 	public class ObjectPool
 	{
 		private var _clz:Class;
@@ -33,10 +35,7 @@ package com.kramer.pool
 		private function createObject():IPoolableObject
 		{
 			var obj:IPoolableObject = new _clz() as IPoolableObject;
-			if((obj is IPoolableObject) == false)
-			{
-				throw new Error("Class " + _clz + " should be subtype of IPoolableObject");
-			}
+			Debug.assert((obj is IPoolableObject), "Class " + _clz + " should be subtype of IPoolableObject");
 			return obj;
 		}
 		

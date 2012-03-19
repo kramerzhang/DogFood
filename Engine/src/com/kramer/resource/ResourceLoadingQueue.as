@@ -1,6 +1,7 @@
 package com.kramer.resource
 {
 	import com.kramer.core.IDisposable;
+	import com.kramer.debug.Debug;
 	import com.kramer.resource.item.ILoadable;
 	
 	import flash.events.ErrorEvent;
@@ -34,32 +35,21 @@ package com.kramer.resource
 		
 		public function addLoadableItem(item:ILoadable):void
 		{
-			if(_isStart == true)
-			{
-				throw new Error("Can't add item after loading start");
-			}
+			Debug.assert(_isStart ==  false, "Can't add item after loading start");
 			_itemQueue.push(item);
 		}
 		
 		public function start():void
 		{
 			if(_isStart == true)return;
+			Debug.assert(_itemQueue.length > 0, "no item in queue to load");
 			_itemTotalNum = _itemQueue.length;
-			validate();
 			_isStart = true;
 			if(hasEventListener(Event.OPEN))
 			{
 				dispatchEvent(new Event(Event.OPEN));
 			}
 			loadNextItem();
-		}
-		
-		private function validate():void
-		{
-			if(_itemTotalNum == 0)
-			{
-				throw new Error("no items in queue");
-			}
 		}
 		
 		private function loadNextItem():void

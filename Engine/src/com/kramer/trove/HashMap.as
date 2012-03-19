@@ -1,5 +1,7 @@
 package com.kramer.trove
 {
+	import com.kramer.debug.Debug;
+	
 	import flash.filters.DisplacementMapFilter;
 	import flash.utils.Dictionary;
 
@@ -18,10 +20,7 @@ package com.kramer.trove
 		
 		public function put(key:*, value:*):*
 		{
-			if(key == null)
-			{
-				throw new ArgumentError("Hash map key shouldn't be null");
-			}
+			Debug.assert(key != null, "Hash map key can't be null");
 			if((key in _content) == false)
 			{
 				_length += 1;

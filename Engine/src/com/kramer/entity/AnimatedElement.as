@@ -2,6 +2,7 @@ package com.kramer.entity
 {
 	import com.kramer.animation.Animation;
 	import com.kramer.animation.IAnimation;
+	import com.kramer.debug.Debug;
 	import com.kramer.entity.events.ActionEvent;
 	import com.kramer.entity.events.CommandEvent;
 	import com.kramer.entity.events.EntityEvent;
@@ -70,10 +71,7 @@ package com.kramer.entity
 			if(_action != null)
 			{
 				_actionLabel = _animation.frameLabelMap.get(_action);
-				if(_actionLabel == null)
-				{
-					throw new ArgumentError("action not exist!");
-				}
+				Debug.assert(_actionLabel != null, "action not exist!", true);
 				_animation.setLoopRange(_actionLabel.startNum, _actionLabel.endNum);
 				_animation.gotoAndPlay(_actionLabel.startNum);
 			}
