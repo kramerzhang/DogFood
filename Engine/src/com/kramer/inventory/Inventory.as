@@ -3,14 +3,16 @@ package com.kramer.inventory
 	/**
 	 * 
 	 */	
+	import com.kramer.debug.Debug;
 	import com.kramer.inventory.events.InventoryEvent;
+	import com.kramer.log.LogLevel;
 	import com.kramer.log.Logger;
 	import com.kramer.trove.HashMap;
 	import com.kramer.utils.StringUtil;
 	
 	import flash.events.EventDispatcher;
 
-	[Event(name="update", type = "com.kramer.inventory.events.InventoryEvent")]
+	[Event(name="update", type="com.kramer.inventory.events.InventoryEvent")]
 	public class Inventory extends EventDispatcher
 	{
 		protected var _itemFactory:ItemFactory;
@@ -31,6 +33,7 @@ package com.kramer.inventory
 		{
 			_content = new HashMap();
 			_logger = Logger.getLogger("Inventory");
+			_logger.setLevel(LogLevel.ERROR);
 		}
 		
 		public function set capacity(value:int):void
@@ -48,7 +51,7 @@ package com.kramer.inventory
 			return _usedCapacity;
 		}
 		
-		public function getAvailableCapacity():int
+		public function get availableCapacity():int
 		{
 			return _capacity - _usedCapacity;
 		}
@@ -67,7 +70,7 @@ package com.kramer.inventory
 		{
 			var item:Item = _itemFactory.getItem(id);
 			var remainNum:int = num;
-			remainNum = remainNum - getAvailableCapacity() * item.maxPackNum;
+			remainNum = remainNum - this.availableCapacity * item.maxPackNum;
 			if(remainNum <= 0)
 			{
 				return true;
@@ -88,7 +91,7 @@ package com.kramer.inventory
 		}
 		
 		//add item according to server, do data verification in server side
-		public function updateItem(index:int, id:int, num:int):void
+		public function updateItem(index:int, id:int, num:int, canDispatchEvent:Boolean = true):void
 		{
 			var item:Item = _content.get(index);
 			if(item != null)
@@ -108,14 +111,17 @@ package com.kramer.inventory
 				_usedCapacity++;
 			}
 			_logger.info(StringUtil.format("update at index:%d, id:%d, num:%d", index, id, num));
-			dispatchInventoryEvent(InventoryEvent.UPDATE, index, id);
+			if(canDispatchEvent == true)
+			{
+				dispatchInventoryEvent(InventoryEvent.UPDATE, index, id, num);
+			}
 		}
 		
-		protected function dispatchInventoryEvent(type:String, index:int, id:int):void
+		protected function dispatchInventoryEvent(type:String, index:int, id:int, num:int):void
 		{
 			if(hasEventListener(type))
 			{
-				dispatchEvent(new InventoryEvent(type, index, id));
+				dispatchEvent(new InventoryEvent(type, index, id, num));
 			}
 		}
 		
@@ -140,6 +146,7 @@ package com.kramer.inventory
 		
 		public function getItemByIndex(index:int):Item
 		{
+			Debug.assert((index >= 0 && index < _capacity), "index out of ranage");
 			return _content.get(index);
 		}
 		
