@@ -13,9 +13,10 @@ package com.kramer.resource.storage
 
 	public class FileStorage
 	{
-		private static const BIG_VOLUME:int = 1024 * 1024;
+		private static const BIG_VOLUME:int = 31457300;
 		
 		private static const ASSETS_SO_NAME:String = "AssetsVersion";
+		
 		private static const KEY_VERSION:String = "vresion";
 		private static const KEY_STATE:String = "state";
 		private static const KEY_DATA:String = "data";
@@ -37,17 +38,20 @@ package com.kramer.resource.storage
 			}
 			_state = STATE_SUSPEND;
 			_versionObj = SharedObjectManager.getCommonSharedObject(ASSETS_SO_NAME);
-			if(_versionObj.data[KEY_VERSION] == null)
+			if(_versionObj != null)
 			{
-				_versionObj.data[KEY_VERSION] = new Object();
-			}
-			if(_versionObj.data[KEY_STATE] != null)
-			{
-				_state = _versionObj.data[KEY_STATE];
-			}
-			else
-			{
-				_versionObj.data[KEY_STATE] = _state;
+				if(_versionObj.data[KEY_VERSION] == null)
+				{
+					_versionObj.data[KEY_VERSION] = new Object();
+				}
+				if(_versionObj.data[KEY_STATE] != null)
+				{
+					_state = _versionObj.data[KEY_STATE];
+				}
+				else
+				{
+					_versionObj.data[KEY_STATE] = _state;
+				}
 			}
 		}
 		
@@ -101,6 +105,7 @@ package com.kramer.resource.storage
 		{
 			_state = state;
 			_versionObj.data[KEY_STATE] = _state;
+			_versionObj.flush();
 		}
 		
 		public static function getFile(url:String):ByteArray
@@ -118,7 +123,11 @@ package com.kramer.resource.storage
 				return null;
 			}
 			var fileSO:SharedObject = SharedObjectManager.getCommonSharedObject(soName);
-			return fileSO.data[KEY_DATA] as ByteArray;
+			if(fileSO != null)
+			{
+				return fileSO.data[KEY_DATA] as ByteArray;
+			}
+			return null;
 		}
 		
 		public static function addFile(url:String, file:ByteArray):void
@@ -136,8 +145,11 @@ package com.kramer.resource.storage
 			var ver:int = UrlUtil.getVersionByUrl(url);
 			updateFileVersion(soName, ver);
 			var fileSO:SharedObject = SharedObjectManager.getCommonSharedObject(soName);
-			fileSO.data[KEY_DATA] = file;
-			fileSO.flush();
+			if(fileSO != null)
+			{
+				fileSO.data[KEY_DATA] = file;
+				fileSO.flush();
+			}
 		}
 		
 		private static function updateFileVersion(soName:String, version:int):void

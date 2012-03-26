@@ -15,12 +15,30 @@ package com.kramer.sharedObject
 		
 		public static function getCommonSharedObject(name:String):SharedObject
 		{
-			return SharedObject.getLocal(COMMON_FOLDER_NAME + "/" + name, "/");
+			var so:SharedObject = null;
+			try
+			{
+				so = SharedObject.getLocal(COMMON_FOLDER_NAME + "/" + name, "/"); 	
+			}
+			catch(err:Error)
+			{
+				//when the space for local sharedObject is 0K 
+			}
+			return so;
 		}
 		
 		public static function getUserSharedObject(name:String):SharedObject
 		{
-			return SharedObject.getLocal(_userName + "/" + name, "/");
+			var so:SharedObject = null;
+			try
+			{
+				so = SharedObject.getLocal(_userName + "/" + name, "/"); 
+			}
+			catch(err:Error)
+			{
+				//when the space for local sharedObject is 0K 
+			}
+			return so;
 		}
 	}
 }

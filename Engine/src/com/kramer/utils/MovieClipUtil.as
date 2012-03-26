@@ -26,7 +26,7 @@ package com.kramer.utils
 					target.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 				}
 			}
-			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
 		}
 		
 		public static function executeAtFrame(mc:MovieClip, frameNum:int, callback:Function, totalCount:int = 1):void
@@ -45,7 +45,7 @@ package com.kramer.utils
 					}
 				}
 			}
-			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
 		}
 		
 		public static function executeAtLabel(mc:MovieClip, label:String, callback:Function, totalCount:int = 1):void
@@ -64,7 +64,7 @@ package com.kramer.utils
 					}
 				}
 			}
-			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
 		}
 		
 	}
