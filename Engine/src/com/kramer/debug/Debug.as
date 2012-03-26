@@ -4,11 +4,11 @@ package com.kramer.debug
 
 	public class Debug
 	{
-		public static function assert(condition:Boolean, errorMessage:String, enterDebugger:Boolean = false):void
+		public static function assert(condition:Boolean, errorMessage:String, enterDebuggerMode:Boolean = false):void
 		{
 			if(condition == false)
 			{
-				if(enterDebugger == true)
+				if(enterDebuggerMode == true)
 				{
 					enterDebugger();
 				}

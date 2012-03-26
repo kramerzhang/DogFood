@@ -30,6 +30,8 @@ package com.kramer.animation
 		function set frameRate(value:int):void;
 		function get frameRate():int;
 		
+		function set ignoreUpdate(value:Boolean):void;
+		function get ignoreUpdate():Boolean;
 		function update(currentTime:int):void;
 		
 	}

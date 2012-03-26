@@ -1,14 +1,15 @@
 package com.kramer.entity
 {
 	import com.kramer.core.IDisposable;
+	import com.kramer.scene.ICameraTarget;
 	
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	
-	public class Entity extends Sprite implements IDisposable
+	public class Entity extends Sprite implements IDisposable, ICameraTarget
 	{
 		private var _id:int;
-		private var _position:Point;
+		private var _ignoreUpdate:Boolean;
 		
 		public function Entity()
 		{
@@ -30,21 +31,14 @@ package com.kramer.entity
 			return _id;
 		}
 		
-		public function set position(value:Point):void
+		public function set ignoreUpdate(value:Boolean):void
 		{
-			this.x = value.x;
-			this.y = value.y;
+			_ignoreUpdate = value;
 		}
 		
-		public function get position():Point
+		public function get ignoreUpdate():Boolean
 		{
-			if(_position == null)
-			{
-				_position = new Point();
-			}
-			_position.x = this.x;
-			_position.y = this.y;
-			return _position;
+			return _ignoreUpdate;
 		}
 		
 		public function update(currentTime:int):void
@@ -54,7 +48,6 @@ package com.kramer.entity
 		
 		public function dispose():void
 		{
-			_position = null;
 		}
 	}
 }

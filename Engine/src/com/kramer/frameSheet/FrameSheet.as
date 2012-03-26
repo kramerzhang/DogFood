@@ -146,7 +146,7 @@ package com.kramer.frameSheet
 		
 		public function getFrame(frameNum:int):Frame
 		{
-			Debug.assert((frame > 1 && frame <= _totalFrameNum), "frameNum should be in the range of 1~" + _totalFrameNum);
+			Debug.assert((frameNum >= 1 && frameNum <= _totalFrameNum), "frameNum should be in the range of 1~" + _totalFrameNum);
 			var frame:Frame = _frames[frameNum - 1];
 			if(frame.hasContent == false)
 			{

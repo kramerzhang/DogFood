@@ -31,6 +31,7 @@ package com.kramer.animation
 		private var _delay:int;
 		private var _frameRate:int;
 		private var _lastUpdateTime:int;
+		private var _ignoreUpdate:Boolean;
 		
 		private var _isPlaying:Boolean = true;
 		private var _isReady:Boolean = false;
@@ -217,6 +218,16 @@ package com.kramer.animation
 			return _frameRate;
 		}
 		
+		public function set ignoreUpdate(value:Boolean):void
+		{
+			_ignoreUpdate = value;
+		}
+		
+		public function get ignoreUpdate():Boolean
+		{
+			return _ignoreUpdate;
+		}
+		
 		public function update(currentTime:int):void
 		{
 			if(_isReady == false)
@@ -237,6 +248,10 @@ package com.kramer.animation
 		
 		private function drawFrame():void
 		{
+			if(this.ignoreUpdate == true)
+			{
+				return;
+			}
 			_currentFrame = _frameSheet.getFrame(_currentFrameNum);
 			if(this.bitmapData != _currentFrame.content)
 			{
