@@ -17,10 +17,10 @@ package com.kramer.inventory
 	{
 		protected var _itemFactory:ItemFactory;
 		protected var _capacity:int;
+		protected var _usedCapacity:int;
 		protected var _logger:Logger;
 		//keyed by index of item
 		protected var _content:HashMap;
-		protected var _usedCapacity:int;
 		
 		public function Inventory(itemFactory:ItemFactory)
 		{
