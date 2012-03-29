@@ -6,11 +6,12 @@ package com.kramer.objectProxy
 	import flash.utils.Proxy;
 	import flash.utils.flash_proxy;
 	
+	[Event(name="propertyChange", type="com.kramer.objectProxy.PropertyChangeEvent")]
 	public dynamic class ObjectProxy extends Proxy implements IEventDispatcher
 	{
-		private var _propertyList:Array;
-		private var _dispatcher:EventDispatcher;
-		private var _obj:Object;
+		protected var _propertyList:Array;
+		protected var _dispatcher:EventDispatcher;
+		protected var _obj:Object;
 		
 		public function ObjectProxy(obj:Object = null)
 		{
@@ -86,7 +87,7 @@ package com.kramer.objectProxy
 			_obj[name] = value;
 			if(_dispatcher.hasEventListener(PropertyChangeEvent.PROPERTY_CHANGE))
 			{
-				_dispatcher.dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, name.toString(), oldValue, _obj[name]));
+				_dispatcher.dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, name, oldValue, _obj[name]));
 			}
 		}
 		

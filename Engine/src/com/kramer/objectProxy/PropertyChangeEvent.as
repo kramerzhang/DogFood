@@ -30,6 +30,15 @@ package com.kramer.objectProxy
 			this.source = source;
 		}
 		
+		override public function toString():String
+		{
+			return "PropertyChangeEvent,Kind:" + kind
+				+ " property:" + property 
+				+ " oldValue:" + oldValue 
+				+ " newValue:" + newValue 
+				+ " source:" + source;
+		}
+		
 		override public function clone():Event
 		{
 			return new PropertyChangeEvent(type, kind, property, oldValue, newValue, source, bubbles, cancelable);
@@ -37,7 +46,7 @@ package com.kramer.objectProxy
 		
 		public static function createUpdateEvent(source:Object, property:Object, oldValue:Object, newValue:Object):PropertyChangeEvent
 		{
-			return new PropertyChangeEvent(PROPERTY_CHANGE, "update", property, oldValue, newValue);
+			return new PropertyChangeEvent(PROPERTY_CHANGE, "update", property, oldValue, newValue, source);
 		}
 	}
 }
