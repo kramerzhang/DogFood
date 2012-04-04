@@ -108,7 +108,7 @@ package com.kramer.module
 			}
 		}
 		
-		public static function removeModuleByUrl(url:String):void
+		private static function removeModuleByUrl(url:String):void
 		{
 			if(containsModule(url) == true)
 			{

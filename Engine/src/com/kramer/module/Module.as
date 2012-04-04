@@ -46,11 +46,6 @@ package com.kramer.module
 			//remove logic handler here
 		}
 		
-		public function set gameWorld(value:GameWorld):void
-		{
-			_gameWorld = value;
-		}
-		
 		protected function setUI(ui:MovieClip):void
 		{
 			_ui = ui;
@@ -99,6 +94,11 @@ package com.kramer.module
 		protected function update():void
 		{
 			//to update ui according to the data
+		}
+		
+		public function set gameWorld(value:GameWorld):void
+		{
+			_gameWorld = value;
 		}
 		
 		public function show():void
