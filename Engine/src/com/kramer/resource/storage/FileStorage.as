@@ -13,6 +13,10 @@ package com.kramer.resource.storage
 
 	public class FileStorage
 	{
+		public static const STATE_REJECT:int = 2;
+		public static const STATE_ACCEPT:int = 1;
+		public static const STATE_SUSPEND:int = 0;
+		
 		private static const BIG_VOLUME:int = 31457300;
 		
 		private static const ASSETS_SO_NAME:String = "AssetsVersion";
@@ -21,9 +25,6 @@ package com.kramer.resource.storage
 		private static const KEY_STATE:String = "state";
 		private static const KEY_DATA:String = "data";
 		
-		private static const STATE_REJECT:int = 2;
-		private static const STATE_ACCEPT:int = 1;
-		private static const STATE_SUSPEND:int = 0;
 		
 		private static var _state:int;
 		private static var _versionObj:SharedObject;
@@ -32,10 +33,6 @@ package com.kramer.resource.storage
 		
 		private static function initialize():void
 		{
-			if(Config.DEBUG_MODE == true)
-			{
-				return;
-			}
 			_state = STATE_SUSPEND;
 			_versionObj = SharedObjectManager.getCommonSharedObject(ASSETS_SO_NAME);
 			if(_versionObj != null)
@@ -55,12 +52,13 @@ package com.kramer.resource.storage
 			}
 		}
 		
+		private static function isDebugMode():Boolean
+		{
+			return Config.DEBUG_MODE;
+		}
+		
 		public static function askForStorageSpace():void
 		{
-			if(Config.DEBUG_MODE == true)
-			{
-				return;
-			}
 			if(_state == STATE_ACCEPT)
 			{
 				return;
@@ -108,9 +106,14 @@ package com.kramer.resource.storage
 			_versionObj.flush();
 		}
 		
+		public static function getState():int
+		{
+			return _state;
+		}
+		
 		public static function getFile(url:String):ByteArray
 		{
-			if(Config.DEBUG_MODE == true)
+			if(isDebugMode() == true)
 			{
 				return null;
 			}
@@ -132,7 +135,7 @@ package com.kramer.resource.storage
 		
 		public static function addFile(url:String, file:ByteArray):void
 		{
-			if(Config.DEBUG_MODE == true)
+			if(isDebugMode() == true)
 			{
 				return;
 			}
