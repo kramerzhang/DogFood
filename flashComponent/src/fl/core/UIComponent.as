@@ -132,7 +132,7 @@ package fl.core {
     /**
      *  The TextFormat object to use to render the component label.
      *
-     *  @default TextFormat("_sans", 11, 0x000000, false, false, false, '', '', TextFormatAlign.LEFT, 0, 0, 0, 0)
+     *  @default TextFormat("_sans", 12, 0x000000, false, false, false, '', '', TextFormatAlign.LEFT, 0, 0, 0, 0)
      *
      *
      * @langversion 3.0
@@ -146,7 +146,7 @@ package fl.core {
     /**
      *  The TextFormat object to use to render the component label when the button is disabled.
      *
-     *  @default TextFormat("_sans", 11, 0x999999, false, false, false, '', '', TextFormatAlign.LEFT, 0, 0, 0, 0)
+     *  @default TextFormat("_sans", 12, 0x999999, false, false, false, '', '', TextFormatAlign.LEFT, 0, 0, 0, 0)
      *
      *
      * @langversion 3.0
@@ -398,10 +398,10 @@ package fl.core {
 		private static var defaultStyles:Object = {
 											focusRectSkin:"fl.ui.focusRectSkin",
 											focusRectPadding:2,
-											textFormat: new TextFormat("_sans", 11, 0x000000, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0),
-											disabledTextFormat: new TextFormat("_sans", 11, 0x999999, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0),
-											defaultTextFormat: new TextFormat("_sans", 11, 0x000000, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0),
-											defaultDisabledTextFormat: new TextFormat("_sans", 11, 0x999999, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0)
+											textFormat: new TextFormat("_sans", 12, 0x000000, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0),
+											disabledTextFormat: new TextFormat("_sans", 12, 0x999999, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0),
+											defaultTextFormat: new TextFormat("_sans", 12, 0x000000, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0),
+											defaultDisabledTextFormat: new TextFormat("_sans", 12, 0x999999, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0)
 											}
 
 
@@ -650,7 +650,9 @@ package fl.core {
          *  @playerversion AIR 1.0
          *  @productversion Flash CS3
          */
-		override public function get width():Number { return _width; }
+		override public function get width():Number { 
+			return _width; 
+		}
         /**
          * @private (setter)
          *
@@ -658,7 +660,9 @@ package fl.core {
          * @playerversion Flash 9.0.28.0
          */
 		override public function set width(value:Number):void {
-			if (_width == value) { return; }
+			if (_width == value) { 
+				return; 
+			}
 			setSize(value, height);
 		}
 
@@ -682,7 +686,9 @@ package fl.core {
          *  @playerversion AIR 1.0
          *  @productversion Flash CS3
          */
-		override public function get height():Number { return _height; }
+		override public function get height():Number { 
+			return _height; 
+		}
         /**
          * @private (setter)
          *
@@ -690,7 +696,9 @@ package fl.core {
          * @playerversion Flash 9.0.28.0
          */
 		override public function set height(value:Number):void {
-			if (_height == value) { return; }
+			if (_height == value) { 
+				return; 
+			}
 			setSize(width, value);
 		}
 
@@ -1074,7 +1082,9 @@ package fl.core {
          * @playerversion Flash 9.0.28.0
          */
 		public function setSharedStyle(name:String,style:Object):void {
-			if (sharedStyles[name] === style  && !(style is TextFormat)) { return; }
+			if (sharedStyles[name] === style  && !(style is TextFormat)) {
+				return; 
+			}
 			sharedStyles[name] = style;
 			if (instanceStyles[name] == null) {
 				invalidate(InvalidationType.STYLES);
@@ -1345,11 +1355,14 @@ package fl.core {
          * @playerversion Flash 9.0.28.0
          */
 		protected function checkLivePreview():Boolean {
-			if (parent == null) { return false; }
+			if (parent == null) { 
+				return false; 
+			}
 			var className:String;
 			try {
 				className = getQualifiedClassName(parent);	
-			} catch (e:Error) {}
+			} catch (e:Error) {
+			}
 			return (className == "fl.livepreview::LivePreviewParent");	
 		}
 
@@ -1442,7 +1455,11 @@ package fl.core {
 		 *  @productversion Flash CS3
 		 */
 		protected function getStyleValue(name:String):Object {
-			return (instanceStyles[name] == null) ? sharedStyles[name] : instanceStyles[name];
+			if(instanceStyles[name] != null)
+			{
+				return instanceStyles[name]; 
+			}
+			return sharedStyles[name];
 		}
 		/**
          * @private (protected)

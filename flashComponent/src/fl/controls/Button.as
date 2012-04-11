@@ -91,7 +91,7 @@ package fl.controls {
          * @playerversion Flash 9.0.28.0
          */
 		private static var defaultStyles:Object = {
-			emphasizedSkin:"Button_emphasizedSkin", emphasizedPadding:2
+			emphasizedSkin:"fl.ui.Button_emphasizedSkin", emphasizedPadding:2
 		};
 		
         /**
@@ -110,7 +110,7 @@ package fl.controls {
          *  @productversion Flash CS3
          */
 		public static function getStyleDefinition():Object { 
-			return UIComponent.mergeStyles(LabelButton.getStyleDefinition(), defaultStyles);
+			return UIComponent.mergeStyles(defaultStyles, LabelButton.getStyleDefinition());
 		}		
 				
 		/**

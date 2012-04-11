@@ -192,7 +192,8 @@ package fl.managers {
 			var classDef:Class = getClassDef(instance);
 			var styles:Object = inst.classToDefaultStylesDict[classDef];
 			for (var n:String in styles) {
-				instance.setSharedStyle(n,getSharedStyle(instance,n));
+				var style:Object = getSharedStyle(instance,n);
+				instance.setSharedStyle(n, style);
 			}
 		}
 		
@@ -207,13 +208,17 @@ package fl.managers {
 			var inst:StyleManager = getInstance();
 			// first check component styles:
 			var style:Object = inst.classToStylesDict[classDef][name];
-			if (style != null) { return style; }
-			// then check global styles:
+			if (style != null) {
+				return style; 
+			}
+			// check the default component style:
+			style = inst.classToDefaultStylesDict[classDef][name];
+			if (style != null) {
+				return style;
+			}
+			// finally check global styles:
 			style = inst.globalStyles[name];
-			
-			if (style != null) { return style; }
-			// finally return the default component style:
-			return inst.classToDefaultStylesDict[classDef][name];
+			return style; 
 		}
 		
 		/**

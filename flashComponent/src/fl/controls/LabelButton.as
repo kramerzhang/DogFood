@@ -19,6 +19,7 @@ package fl.controls {
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
 	import flash.ui.Keyboard;
 	
     //--------------------------------------
@@ -441,8 +442,9 @@ package fl.controls {
 												  icon:null,
 												  upIcon:null,downIcon:null,overIcon:null,disabledIcon:null,
 												  selectedDisabledIcon:null,selectedUpIcon:null,selectedDownIcon:null,selectedOverIcon:null,
-												  textFormat:null, disabledTextFormat:null,
-												  textPadding:5, embedFonts:false
+												  textPadding:5, embedFonts:false,
+												  textFormat: new TextFormat("_sans", 12, 0xffffff, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0),
+												  disabledTextFormat: new TextFormat("_sans", 12, 0x999999, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0)
 												  };
         /**
          * @copy fl.core.UIComponent#getStyleDefinition()
@@ -747,18 +749,15 @@ package fl.controls {
          * @playerversion Flash 9.0.28.0
 		 */
 		protected function drawTextFormat():void {
-			// Apply a default textformat
-			var uiStyles:Object = UIComponent.getStyleDefinition();
-			var defaultTF:TextFormat = enabled ? uiStyles.defaultTextFormat as TextFormat : uiStyles.defaultDisabledTextFormat as TextFormat;
-			textField.setTextFormat(defaultTF);
-			
-			var tf:TextFormat = getStyleValue(enabled?"textFormat":"disabledTextFormat") as TextFormat;
-			if (tf != null) {
+			var tf:TextFormat = getStyleValue(enabled ? "textFormat" : "disabledTextFormat") as TextFormat;
+			if(tf != null) {
 				textField.setTextFormat(tf);
 			} else {
-				tf = defaultTF;
+				// Apply a default textformat
+				var uiStyles:Object = UIComponent.getStyleDefinition();
+				var defaultTF:TextFormat = enabled ? uiStyles.defaultTextFormat as TextFormat : uiStyles.defaultDisabledTextFormat as TextFormat;
+				textField.setTextFormat(defaultTF);
 			}
-			textField.defaultTextFormat = tf;
 			
 			setEmbedFont();
 		}

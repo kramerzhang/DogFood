@@ -298,8 +298,6 @@ package fl.controls {
 												  disabledSkin:"fl.ui.Button_disabledSkin",
 												  selectedDisabledSkin:"fl.ui.Button_selectedDisabledSkin",
 												  selectedUpSkin:"fl.ui.Button_selectedUpSkin",selectedDownSkin:"fl.ui.Button_selectedDownSkin",selectedOverSkin:"fl.ui.Button_selectedOverSkin",
-												  disabledTextFormat: new TextFormat("_sans", 11, 0x999999, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0),
-												  textFormat: new TextFormat("_sans", 11, 0xFFFFFF, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0),
 												  focusRectSkin:null, focusRectPadding:null,
 												  repeatDelay:500,repeatInterval:35};
         /**
@@ -317,7 +315,9 @@ package fl.controls {
          *  @playerversion AIR 1.0
          *  @productversion Flash CS3
          */
-		public static function getStyleDefinition():Object { return defaultStyles; }
+		public static function getStyleDefinition():Object {
+			return mergeStyles(defaultStyles, UIComponent.getStyleDefinition()); 
+		}
 
         //--------------------------------------
         //  Constructor
