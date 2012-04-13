@@ -1,7 +1,9 @@
 package com.kramer
 {
+	import com.kramer.module.ModuleManager;
 	import com.kramer.objectProxy.ObjectProxy;
 	import com.kramer.scene.WorldScene;
+	import com.kramer.tick.TickManager;
 	
 	import flash.display.Stage;
 

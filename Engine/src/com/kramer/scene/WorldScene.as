@@ -1,8 +1,12 @@
 package com.kramer.scene
 {
+	import com.kramer.core.IDisposable;
+	import com.kramer.tick.ITickable;
+	import com.kramer.tick.TickManager;
+	
 	import flash.display.Sprite;
 	
-	public class WorldScene extends Sprite
+	public class WorldScene extends Sprite implements ITickable, IDisposable
 	{
 		private var _screenWidth:int;
 		private var _screenHeight:int;
@@ -11,6 +15,8 @@ package com.kramer.scene
 
 		private var _camera:Camera;
 		
+		private var _tickManager:TickManager;
+		
 		public function WorldScene()
 		{
 			initialize();
@@ -18,6 +24,8 @@ package com.kramer.scene
 		
 		private function initialize():void
 		{
+			_tickManager = TickManager.instance;
+			_tickManager.attach(this);
 			_camera = new Camera(0, 0, this);
 		}
 		
@@ -54,6 +62,17 @@ package com.kramer.scene
 		public function get sceneHeight():int
 		{
 			return _sceneHeight;
+		}
+		
+		public function update():void
+		{
+			
+		}
+		
+		public function dispose():void
+		{
+			_tickManager.detach(this);
+			_tickManager = null;
 		}
 
 	}
