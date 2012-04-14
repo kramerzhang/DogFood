@@ -14,7 +14,7 @@ package com.kramer.IO
 	public class KeyManager extends EventDispatcher
 	{
 		public static const KEY_EVENT:String = "keyEvent";
-		private static const MAX_KEY_CODE:int = 256;
+		
 		private static var _instance:KeyManager;
 		private static var _keyMap:HashMap;
 		private static var _pressedKeyMap:HashMap;
@@ -42,24 +42,21 @@ package com.kramer.IO
 		private static function setupKeyMap():void
 		{
 			_keyMap = new HashMap();
-			for(var i:int = 0; i < MAX_KEY_CODE; i++)
+			var keyCodeArr:Array = _keyCodeMap.getValues();
+			for each(var keyCode:int in keyCodeArr)
 			{
-				_keyMap.put(i, new Key(i));
+				_keyMap.put(keyCode, new Key(keyCode));
 			}
 		}
 		
 		private static function setupKeyCodeMap():void
 		{
 			_keyCodeMap = new HashMap();
-			var letterStartCode:int = 65; //"A" code
-			for(var i:int = letterStartCode; i < (letterStartCode + 26); i++)
+			for(var i:int = Keyboard.A; i < Keyboard.Z; i++)
 			{
 				_keyCodeMap.put(String.fromCharCode(i), i);
-				_keyCodeMap.put(String.fromCharCode(i + 32), i);
 			}
-			
-			var numberStartCode:int = 48; //number 0
-			for(var j:int = numberStartCode; j < numberStartCode + 10; j++)
+			for(var j:int = Keyboard.NUMBER_0; j < Keyboard.NUMBER_9; j++)
 			{
 				_keyCodeMap.put(String.fromCharCode(j), j);
 			}
@@ -190,53 +187,58 @@ package com.kramer.IO
 		public static function isKeyDown(value:String):Boolean
 		{
 			var keyCode:int = getKeyCode(value);
-			if(keyCode == -1)
-			{
-				return false;
-			}
 			var key:Key = _keyMap.get(keyCode);
-			return key.isDown;
+			if(key != null)
+			{
+				return key.isDown;
+			}
+			return false;
 		}
 		
 		public static function isKeyPressed(value:String):Boolean
 		{
 			var keyCode:int = getKeyCode(value);
-			if(keyCode == -1)
-			{
-				return false;
-			}
 			var key:Key = _keyMap.get(keyCode);
-			return key.isPressed;
+			if(key != null)
+			{
+				return key.isPressed;
+			}
+			return false;
 		}
 		
 		public static function isKeyReleased(value:String):Boolean
 		{
 			var keyCode:int = getKeyCode(value);
-			if(keyCode == -1)
-			{
-				return false;
-			}
 			var key:Key = _keyMap.get(keyCode);
-			return key.isReleased;
+			if(key != null)
+			{
+				return key.isReleased;
+			}
+			return false;
 		}
 		
 		private static function getKeyCode(key:String):int
 		{
-			if(_keyAliasMap.get(key) != null)
+			var upperCaseKey:String = key.toUpperCase();
+			if(_keyAliasMap.get(upperCaseKey) != null)
 			{
-				return _keyAliasMap.get(key);
+				return _keyAliasMap.get(upperCaseKey);
 			}
-			return _keyCodeMap.get(key);
+			if(_keyCodeMap.get(upperCaseKey) != null)
+			{
+				return _keyCodeMap.get(upperCaseKey);
+			}
+			return -1;
 		}
 		
 		public static function registerKeyAlias(alias:String, keyCode:int):void
 		{
-			_keyAliasMap.put(alias, keyCode);
+			_keyAliasMap.put(alias.toUpperCase(), keyCode);
 		}
 		
 		public static function unregisterKeyAlias(alias:String, keyCode:int):void
 		{
-			_keyAliasMap.remove(alias);
+			_keyAliasMap.remove(alias.toUpperCase());
 		}
 		
 	}

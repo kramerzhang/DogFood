@@ -57,5 +57,10 @@ package com.kramer.IO
 			_pressedTime = 0;
 			_releasedTime = 0;
 		}
+		
+		public function toString():String
+		{
+			return String.fromCharCode(_keyCode);
+		}
 	}
 }
