@@ -127,7 +127,10 @@ package fl.controls {
          * @langversion 3.0
          * @playerversion Flash 9.0.28.0
 		 */
-		private static var defaultStyles:Object = {textFormat:null, embedFonts:false};
+		private static var defaultStyles:Object = {
+													textFormat:null, 
+													embedFonts:false
+		};
 
         /**
          * @copy fl.core.UIComponent#getStyleDefinition()

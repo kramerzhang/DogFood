@@ -34,6 +34,16 @@ package com.kramer.module
 			return _moduleMap.containsKey(url);
 		}
 		
+		public static function isShowingModule(url:String):Boolean
+		{
+			var moduleProxy:ModuleProxy = getModule(url);
+			if(moduleProxy == null)
+			{
+				return false;
+			}
+			return moduleProxy.isShowing;
+		}
+		
 		public static function showModule(url:String, loaderTitle:String, data:Object = null):ModuleProxy
 		{
 			var moduleProxy:ModuleProxy = _moduleMap.get(url) as ModuleProxy;
@@ -108,18 +118,9 @@ package com.kramer.module
 			}
 		}
 		
-		private static function removeModuleByUrl(url:String):void
+		public static function hideAllModule(url:String):void
 		{
-			if(containsModule(url) == true)
-			{
-				_moduleMap.remove(url);
-			}
-		}
-		
-		public static function closeAll():void
-		{
-			var moduleProxyArr:Array = _moduleMap.getValues();
-			for each(var moduleProxy:ModuleProxy in moduleProxyArr)
+			for each(var moduleProxy:ModuleProxy in _moduleMap.getValues())
 			{
 				if(moduleProxy.isShowing == true)
 				{
@@ -131,6 +132,15 @@ package com.kramer.module
 				}
 			}
 		}
+		
+		private static function removeModuleByUrl(url:String):void
+		{
+			if(containsModule(url) == true)
+			{
+				_moduleMap.remove(url);
+			}
+		}
+		
 	}
 }
 class Blocker{}
