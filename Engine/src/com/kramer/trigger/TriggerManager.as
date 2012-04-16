@@ -27,8 +27,7 @@ package com.kramer.trigger
 		
 		public function update():void
 		{
-			var vec:Vector.<ITrigger> = getTriggerVec(Event.ENTER_FRAME);
-			feedEvent(new Event(Event.ENTER_FRAME));//to be optimized
+			feedEnterFrameEvent();
 		}
 		
 		public function addTrigger(trigger:ITrigger):void
@@ -80,6 +79,18 @@ package com.kramer.trigger
 			for each(var trigger:ITrigger in vec)
 			{
 				trigger.setEvent(evt);
+				if(trigger.testCondition() == true)
+				{
+					trigger.doAction();
+				}
+			}
+		}
+		
+		private function feedEnterFrameEvent():void
+		{
+			var vec:Vector.<ITrigger> = getTriggerVec(Event.ENTER_FRAME);
+			for each(var trigger:ITrigger in vec)
+			{
 				if(trigger.testCondition() == true)
 				{
 					trigger.doAction();
