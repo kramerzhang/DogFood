@@ -1,5 +1,6 @@
 package com.kramer.pathfinder
 {
+	import com.kramer.debug.Debug;
 	import com.kramer.pool.ObjectPool;
 	import com.kramer.trove.HashMap;
 	
@@ -47,12 +48,14 @@ package com.kramer.pathfinder
 		public function set start(value:Point):void
 		{
 			_startNode = getNode(value.x, value.y);
+			Debug.assert(_startNode != null, "invalid start point");
 			_openedNodeVec.push(_startNode);
 		}
 		
 		public function set target(value:Point):void
 		{
 			_targetNode = getNode(value.x, value.y);
+			Debug.assert(_targetNode != null, "invalid target point");
 		}
 		
 		public function set heuristic(value:IHeuristic):void
@@ -63,24 +66,13 @@ package com.kramer.pathfinder
 		private function getNodeAdjacent(currentNode:Node):Vector.<Node>
 		{
 			var result:Vector.<Node> = new Vector.<Node>();
-			var currentU:int = currentNode.u;
-			var currentV:int = currentNode.v;
 			var len:int = MOVE_STEP.length;
 			for(var i:int = 0; i < len; i++)
 			{
-				var step:Array = MOVE_STEP[i];
-				var u:int = currentU + step[0];
-				var v:int = currentV + step[1];
-				if(u < 0 || v < 0 || u > (_width - 1) || v > (_height - 1))
-				{
-					continue;
-				}
-				if(_data[v][u] == BLOCK)
-				{
-					continue;
-				}
+				var u:int = currentNode.u + MOVE_STEP[i][0];
+				var v:int = currentNode.v + MOVE_STEP[i][1];
 				var node:Node = getNode(u, v);
-				if(node.isVisited == true)
+				if(node == null || node.isVisited == true)
 				{
 					continue;
 				}
@@ -98,6 +90,14 @@ package com.kramer.pathfinder
 		
 		private function getNode(u:int, v:int):Node
 		{
+			if(u < 0 || v < 0 || u > (_width - 1) || v > (_height - 1))
+			{
+				return null
+			}
+			if(_data[v][u] == BLOCK)
+			{
+				return null;
+			}
 			var key:String = u + "_" + v;
 			if(_nodeMap.containsKey(key) == false)
 			{
