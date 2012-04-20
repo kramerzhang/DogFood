@@ -25,10 +25,10 @@ package com.kramer.pool
 			return pool.getObject();
 		}
 		
-		public function release(clz:Class, obj:IPoolableObject):void
+		public function recycle(clz:Class, obj:IPoolableObject):void
 		{
 			var pool:ObjectPool = getPool(clz);
-			pool.release(obj);
+			pool.recycle(obj);
 		}
 		
 		public function getPool(clz:Class):ObjectPool

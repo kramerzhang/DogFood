@@ -39,7 +39,7 @@ package com.kramer.pool
 			return obj;
 		}
 		
-		public function release(obj:IPoolableObject):void
+		public function recycle(obj:IPoolableObject):void
 		{
 			obj.checkin();
 			var len:int = _usingVec.length;

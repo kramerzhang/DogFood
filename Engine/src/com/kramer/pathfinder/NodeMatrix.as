@@ -168,7 +168,7 @@ package com.kramer.pathfinder
 			var nodeArr:Array = _nodeMap.getValues();
 			for each(var node:Node in nodeArr)
 			{
-				_nodePool.release(node);
+				_nodePool.recycle(node);
 			}
 			_nodeMap.clear();
 			_openedNodeVec = new Vector.<Node>();
