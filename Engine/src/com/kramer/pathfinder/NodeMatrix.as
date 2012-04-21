@@ -90,11 +90,7 @@ package com.kramer.pathfinder
 		
 		private function getNode(u:int, v:int):Node
 		{
-			if(u < 0 || v < 0 || u > (_width - 1) || v > (_height - 1))
-			{
-				return null
-			}
-			if(_data[v][u] == BLOCK)
+			if(isValid(u, v) == false)
 			{
 				return null;
 			}
@@ -109,11 +105,25 @@ package com.kramer.pathfinder
 			return _nodeMap.get(key);
 		}
 		
+		public function isValid(u:int, v:int):Boolean
+		{
+			if(u < 0 || v < 0 || u > (_width - 1) || v > (_height - 1))
+			{
+				return false;
+			}
+			if(_data[v][u] == BLOCK)
+			{
+				return false;
+			}
+			return true;
+		}
+		
 		public function findPath():Vector.<Point>
 		{
 			var result:Vector.<Point> = new Vector.<Point>();
 			while(_openedNodeVec.length > 0)
 			{
+				sortOpenNode();
 				var node:Node = _openedNodeVec.pop();
 				node.isVisited = true;
 				if(node == _targetNode)
