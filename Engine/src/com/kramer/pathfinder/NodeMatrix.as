@@ -12,7 +12,7 @@ package com.kramer.pathfinder
 		public static const BLOCK:int 		= 1;
 		
 		private static const STEP_WEIGHT:Array 	= [1, 1, 1, 1];
-		private static const MOVE_STEP:Array 	= [[0, -1], [1, 0], [0, 1], [-1, 0]];
+		private static const MOVE_STEP:Array 	= [[-1, 0], [1, 0], [0, -1], [0, 1]];
 		
 		private var _data:Vector.<Vector.<int>>;
 		private var _width:int;
@@ -77,15 +77,30 @@ package com.kramer.pathfinder
 					continue;
 				}
 				var g:Number = currentNode.g + STEP_WEIGHT[i];
-				if(node.g == 0 || (node.g > 0 && g < node.g))
+				if(node.g == 0 || node.g > g)
 				{
+					removeNodeFromOpenVec(node);
 					node.g = g;
 					node.h = _heuristic.evaluate(node, _targetNode);
 					node.parent = currentNode;
+					result.push(node);
 				}
-				result.push(node);
 			}
 			return result;
+		}
+		
+		private function removeNodeFromOpenVec(node:Node):void
+		{
+			var index:int = _openedNodeVec.indexOf(node);
+			if(index > -1)
+			{
+				_openedNodeVec.splice(index, 1);
+			}
+		}
+		
+		private function addNodeToOpenVec(node:Node):void
+		{
+			_openedNodeVec.push(node);
 		}
 		
 		private function getNode(u:int, v:int):Node
@@ -123,7 +138,6 @@ package com.kramer.pathfinder
 			var result:Vector.<Point> = new Vector.<Point>();
 			while(_openedNodeVec.length > 0)
 			{
-				sortOpenNode();
 				var node:Node = _openedNodeVec.pop();
 				node.isVisited = true;
 				if(node == _targetNode)
@@ -132,12 +146,10 @@ package com.kramer.pathfinder
 					break;
 				}
 				var adjacentNodeVec:Vector.<Node> = getNodeAdjacent(node);
+				adjacentNodeVec.sort(sortFunction);
 				for each(var adjacentNode:Node in adjacentNodeVec)
 				{
-					if(_openedNodeVec.indexOf(adjacentNode) == -1)
-					{
-						_openedNodeVec.push(adjacentNode);
-					}
+					addNodeToOpenVec(adjacentNode);
 				}
 			}
 			return result;
@@ -153,11 +165,6 @@ package com.kramer.pathfinder
 				node = node.parent;
 			}
 			return result;
-		}
-		
-		private function sortOpenNode():void
-		{
-			_openedNodeVec = _openedNodeVec.sort(sortFunction);
 		}
 		
 		private function sortFunction(a:Node, b:Node):int
