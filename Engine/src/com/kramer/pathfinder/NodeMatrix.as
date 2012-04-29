@@ -79,7 +79,9 @@ package com.kramer.pathfinder
 				var g:Number = currentNode.g + STEP_WEIGHT[i];
 				if(node.g == 0 || node.g > g)
 				{
-					removeNodeFromOpenVec(node);
+					//remove node if has been added to the openNodeVec
+					//then will add it to the head of openNodeVec later
+					removeNodeFromOpenVec(node); 
 					node.g = g;
 					node.h = _heuristic.evaluate(node, _targetNode);
 					node.parent = currentNode;
