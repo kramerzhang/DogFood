@@ -18,6 +18,7 @@ package com.kramer.pathfinder
 		private var _width:int;
 		private var _height:int;
 		
+		//keep sorted
 		private var _openedNodeVec:Vector.<Node>;
 		private var _nodeMap:HashMap;
 		private var _nodePool:ObjectPool;
@@ -102,7 +103,22 @@ package com.kramer.pathfinder
 		
 		private function addNodeToOpenVec(node:Node):void
 		{
-			_openedNodeVec.push(node);
+			if(_openedNodeVec.length == 0)
+			{
+				_openedNodeVec.push(node);
+				return;
+			}
+			var len:int = _openedNodeVec.length;
+			for(var i:int = (len - 1); i >= 0; i--)
+			{
+				var currentNode:Node = _openedNodeVec[i];
+				if(node.f <= currentNode.f)
+				{
+					_openedNodeVec.splice((i + 1), 0, node);
+					return;
+				}
+			}
+			_openedNodeVec.unshift(node);
 		}
 		
 		private function getNode(u:int, v:int):Node
@@ -148,7 +164,6 @@ package com.kramer.pathfinder
 					break;
 				}
 				var adjacentNodeVec:Vector.<Node> = getNodeAdjacent(node);
-				adjacentNodeVec.sort(sortFunction);
 				for each(var adjacentNode:Node in adjacentNodeVec)
 				{
 					addNodeToOpenVec(adjacentNode);
@@ -167,19 +182,6 @@ package com.kramer.pathfinder
 				node = node.parent;
 			}
 			return result;
-		}
-		
-		private function sortFunction(a:Node, b:Node):int
-		{
-			if(a.f < b.f)
-			{
-				return 1;
-			}
-			if(a.f > b.f)
-			{
-				return -1;
-			}
-			return 0;
 		}
 		
 		private function reset():void
