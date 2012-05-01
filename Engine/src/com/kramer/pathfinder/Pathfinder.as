@@ -28,7 +28,28 @@ package com.kramer.pathfinder
 			}
 			_nodeMatrix.start = start;
 			_nodeMatrix.target = target;
-			return _nodeMatrix.findPath();
+			return optimizePath(_nodeMatrix.findPath());
+		}
+		
+		private static function optimizePath(path:Vector.<Node>):Vector.<Point>
+		{
+			var result:Vector.<Point> = new Vector.<Point>();
+			var du:int = int.MAX_VALUE;
+			var dv:int = int.MAX_VALUE;
+			var len:int = path.length;
+			for(var i:int = 1; i < len; i++)
+			{
+				var newDu:int = path[i].u - path[i - 1].u;
+				var newDv:int = path[i].v - path[i - 1].v;
+				if(newDu != du || newDv != dv)
+				{
+					du = newDu;
+					dv = newDv;
+					result.push(new Point(path[i - 1].u, path[i - 1].v));
+				}
+			}
+			result.push(new Point(path[len - 1].u, path[len - 1].v));
+			return result;
 		}
 		
 		public static function setHeuristic(value:IHeuristic):void

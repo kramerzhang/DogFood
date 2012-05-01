@@ -103,11 +103,6 @@ package com.kramer.pathfinder
 		
 		private function addNodeToOpenVec(node:Node):void
 		{
-			if(_openedNodeVec.length == 0)
-			{
-				_openedNodeVec.push(node);
-				return;
-			}
 			var len:int = _openedNodeVec.length;
 			for(var i:int = (len - 1); i >= 0; i--)
 			{
@@ -151,9 +146,9 @@ package com.kramer.pathfinder
 			return true;
 		}
 		
-		public function findPath():Vector.<Point>
+		public function findPath():Vector.<Node>
 		{
-			var result:Vector.<Point> = new Vector.<Point>();
+			var result:Vector.<Node> = new Vector.<Node>();
 			while(_openedNodeVec.length > 0)
 			{
 				var node:Node = _openedNodeVec.pop();
@@ -172,13 +167,12 @@ package com.kramer.pathfinder
 			return result;
 		}
 		
-		private function constructPath(node:Node):Vector.<Point>
+		private function constructPath(node:Node):Vector.<Node>
 		{
-			var result:Vector.<Point> = new Vector.<Point>();
+			var result:Vector.<Node> = new Vector.<Node>();
 			while(node != null)
 			{
-				var point:Point = new Point(node.u, node.v);
-				result.unshift(point);
+				result.unshift(node);
 				node = node.parent;
 			}
 			return result;
