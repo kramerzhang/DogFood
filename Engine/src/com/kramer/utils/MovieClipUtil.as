@@ -26,7 +26,14 @@ package com.kramer.utils
 					target.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 				}
 			}
-			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
+			var onRemovedFromStage:Function = function(evt:Event):void
+			{
+				var target:MovieClip = evt.target as MovieClip;
+				target.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+				target.removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+			}
+			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			mc.addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 		}
 		
 		public static function executeAtFrame(mc:MovieClip, frameNum:int, callback:Function, totalCount:int = 1):void
@@ -45,7 +52,14 @@ package com.kramer.utils
 					}
 				}
 			}
-			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
+			var onRemovedFromStage:Function = function(evt:Event):void
+			{
+				var target:MovieClip = evt.target as MovieClip;
+				target.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+				target.removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+			}
+			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			mc.addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 		}
 		
 		public static function executeAtLabel(mc:MovieClip, label:String, callback:Function, totalCount:int = 1):void
@@ -64,7 +78,14 @@ package com.kramer.utils
 					}
 				}
 			}
-			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
+			var onRemovedFromStage:Function = function(evt:Event):void
+			{
+				var target:MovieClip = evt.target as MovieClip;
+				target.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+				target.removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+			}
+			mc.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			mc.addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 		}
 		
 	}
