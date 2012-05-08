@@ -39,16 +39,16 @@ package com.kramer.pathfinder
 			var len:int = path.length;
 			for(var i:int = 1; i < len; i++)
 			{
-				var newDu:int = path[i].u - path[i - 1].u;
-				var newDv:int = path[i].v - path[i - 1].v;
+				var newDu:int = path[i].x - path[i - 1].x;
+				var newDv:int = path[i].y - path[i - 1].y;
 				if(newDu != du || newDv != dv)
 				{
 					du = newDu;
 					dv = newDv;
-					result.push(new Point(path[i - 1].u, path[i - 1].v));
+					result.push(new Point(path[i - 1].x, path[i - 1].y));
 				}
 			}
-			result.push(new Point(path[len - 1].u, path[len - 1].v));
+			result.push(new Point(path[len - 1].x, path[len - 1].y));
 			return result;
 		}
 		

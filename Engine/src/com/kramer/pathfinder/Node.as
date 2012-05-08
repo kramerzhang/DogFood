@@ -7,8 +7,8 @@ package com.kramer.pathfinder
 	{
 		public var g:Number;
 		public var h:Number;
-		public var u:int; //horizontal index
-		public var v:int; //vertical index
+		public var x:int; //horizontal index
+		public var y:int; //vertical index
 		public var isVisited:Boolean;
 		public var parent:Node;
 		
@@ -26,8 +26,8 @@ package com.kramer.pathfinder
 		{
 			g = 0;
 			h = 0;
-			u = 0;
-			v = 0;
+			x = 0;
+			y = 0;
 			isVisited = false;
 			parent = null;
 		}
@@ -48,7 +48,7 @@ package com.kramer.pathfinder
 		
 		public function toString():String
 		{
-			return StringUtil.format("%d_%d ,f: %d, g: %d, h: %d", u, v, f, g, h);
+			return StringUtil.format("%d_%d ,f: %d, g: %d, h: %d", x, y, f, g, h);
 		}
 	}
 }

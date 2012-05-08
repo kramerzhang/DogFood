@@ -70,8 +70,8 @@ package com.kramer.pathfinder
 			var len:int = MOVE_STEP.length;
 			for(var i:int = 0; i < len; i++)
 			{
-				var u:int = currentNode.u + MOVE_STEP[i][0];
-				var v:int = currentNode.v + MOVE_STEP[i][1];
+				var u:int = currentNode.x + MOVE_STEP[i][0];
+				var v:int = currentNode.y + MOVE_STEP[i][1];
 				var node:Node = getNode(u, v);
 				if(node == null || node.isVisited == true)
 				{
@@ -126,8 +126,8 @@ package com.kramer.pathfinder
 			if(_nodeMap.containsKey(key) == false)
 			{
 				var node:Node = _nodePool.getObject() as Node;
-				node.u = u;
-				node.v = v;
+				node.x = u;
+				node.y = v;
 				_nodeMap.put(key, node);
 			}
 			return _nodeMap.get(key);
