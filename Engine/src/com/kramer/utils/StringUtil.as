@@ -156,5 +156,10 @@ package com.kramer.utils
 			}
 			return result;
 		}
+
+		public static function stripHTML(str:String):String
+		{
+			return str.replace(/<.*?>/g, "");
+		}
 	}
 }
